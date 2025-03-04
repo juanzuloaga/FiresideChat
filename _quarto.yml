@@ -1,0 +1,26 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "MODEL EVALUATION SYSTEM"
+  navbar:
+    background: primary
+    search: true
+    right:
+      - text: "Species for Evaluation"
+        menu:
+          - text: "Home"
+            href: index.qmd
+          - text: "Bay-breasted Warbler (BBWA)"
+            href: BBWA.qmd
+  
+  
+
+format:
+  html:
+    theme: Sandstone
+    page-layout: article
+    toc: false
+
+editor: visual

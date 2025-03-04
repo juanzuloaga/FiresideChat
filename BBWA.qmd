@@ -1,0 +1,375 @@
+---
+title: "BBWA (Bay-breasted Warbler)"
+format:
+  html:
+    self-contained: true
+    link-external-icon: true
+    link-external-newwindow: true
+toc: true
+date-modified: last-modified
+editor: visual
+css: styles.css
+---
+
+Please add your feedback on each section of the model cycle.
+
+Use this spreadsheet to add your comments..........
+
+```{r echo=F, message=F, warning=FALSE}
+# Setting working directory
+setwd("C:/FiresideChat")
+# Libraries
+library(dplyr)
+library(reshape2)
+library(tidyr)
+library(kableExtra)
+library(sf)
+library(terra)
+library(tidyterra)
+library(tibble)
+library(ggplot2)
+library(leaflet)
+library(DT)
+library(gbm)
+library(wrapr)
+library(reactable)
+
+
+
+```
+
+```{r echo=FALSE, eval=FALSE}
+
+# Setting working directory
+setwd("C:/FiresideChat/")
+
+#Loading master file and selecting ecoregions c71 & c81
+load("./data/04_NM5.0_data_stratify.R")
+
+# Saving single .cvs files from the R.Dataset (too big and reduce PC performance)
+write.csv(bcrlist,"./data/bcrlist.csv" )
+write.csv(covlist, "./data/covlist.csv")
+write.csv(covlist_sel, "./covlist_sel.csv")
+
+
+```
+
+::: panel-tabset
+## 1. Species
+
+### Histogram of counts
+This is an histogram of raw count from data sets included in the model.
+
+#### Task: *We would like to know if there are outliers and/or a truncation value that modelers might be aware of.*
+
+...........
+
+```{r echo=FALSE, eval=F}
+
+bcrlist_sel <- dplyr::select(bcrlist, id, can71, can81)%>%
+dplyr::filter(can71 == "TRUE" & can81=="TRUE")
+
+bird_d <- as.data.frame(as.matrix(bird))
+str(bird_d)
+
+t5 <- rowid_to_column(bird_d)
+dim(bird)
+
+write.csv(bcrlist_sel, "./data/bcrlist_sel.csv")
+write.csv(bird_d, "./data/bird_d.csv")
+
+
+
+
+```
+
+```{r echo=FALSE, eval=FALSE}
+
+bcrlist_sel <- read.csv("./data/bcrlist_sel.csv")
+bird_d <- read.csv("./data/bird_d.csv")
+
+#merge_birds <- merge(bcrlist_sel, bird_d)
+
+```
+
+
+### Temporal distribution of detections (time relative to sunrise, ordinal day)
+This is the temporal distribution of detections.
+
+#### Task: *We would like to know if there are outliers and/or a truncation value that modelers might be aware of.*
+
+
+### Training data
+This is the training data.........
+
+#### Task: *Please identify misidentifications, migratory individuals, or surprises*
+
+
+#### Please add your comments
+
+.......
+
+## 2. Covariates
+
+```{r echo=FALSE}
+covlist <- read.csv("./data/covlist.csv")
+#covlist_sel <- read.csv("./covlist_sel.csv")
+
+
+covlist_sel <- dplyr::filter(covlist, bcr %in% c("can71", "can81"))%>%
+  dplyr::select(where(~ last(.x) != "FALSE"))%>%
+  reshape2::melt(id.vars =  "bcr")
+ names(covlist_sel)[2] <- "Covariate.label"
+
+cov_label <- read.csv("./data/covariates_label_insert.csv", header=T)
+
+merge_cov <- merge(covlist_sel, cov_label, by="Covariate.label")
+cov_bcr71 <- filter(merge_cov, bcr == "can71")
+cov_bcr81 <- filter(merge_cov, bcr == "can81")
+
+
+```
+
+### Covariates relative importance BCR 71 (mean 10 bootstraps)
+
+###### Task: *Please re-rank covariates and/or suggest expected relative importance and/or percentage (%).*
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+list_bootstraps <- list.files("./data/BBWA/covariates_bootstrps/can_71",
+                             pattern=".R",
+                             full.names = T)
+
+df_bootstrap <- do.call(rbind,
+               lapply(list_bootstraps, function(x) {
+                 
+                 load(file = x)
+                 gbm::summary.gbm(b.i, plotit = F)
+               }))
+
+df_bootstrap_mean <- dplyr::summarise(df_bootstrap, .by=var, mean=mean(rel.inf))
+
+
+
+```
+
+```{r echo=FALSE, fig.height=6}
+
+ggplot(data=df_bootstrap_mean, aes(x=reorder(var, mean), y=mean, fill=mean))+
+           geom_bar(stat = "identity", fill="gray") + 
+   labs(title = "Covariates relative importance",
+        x = "Covariates", y = "%")+
+  coord_flip()+
+    theme(legend.position = "none")
+```
+
+#### Covariates list an description
+###### Task: *Please suggest adding/removing covariates from the list.*
+
+
+```{r echo=FALSE}
+
+ kable(cov_bcr71, format="html", escape = F, align = "c")%>%
+     kableExtra::kable_paper("hover", full_width = F) %>%
+  kableExtra::scroll_box(width = "100%", height = "450px")%>%
+  kableExtra::kable_styling(position = "center")
+```
+
+### Covariates relative importance BCR 81 (mean 10 boostraps)
+###### Task: *Please re-rank covariates and/or suggest expected relative importance and/or percentage (%).*
+
+
+```{r echo=FALSE}
+
+list_bootstraps <- list.files("./data/BBWA/covariates_bootstrps/can_81",
+                             pattern=".R",
+                             full.names = T)
+
+df_bootstrap <- do.call(rbind,
+               lapply(list_bootstraps, function(x) {
+                 
+                 load(file = x)
+                gbm::summary.gbm(b.i, plotit = F)
+               }))
+
+df_bootstrap_mean <- dplyr::summarise(df_bootstrap, .by=var, mean=mean(rel.inf))
+
+
+
+```
+
+```{r echo=FALSE, fig.height=6}
+
+ggplot(data=df_bootstrap_mean, aes(x=reorder(var, mean), y=mean, fill=mean))+
+           geom_bar(stat = "identity", fill="gray") + 
+   labs(title = "Covariates relative importance",
+        x = "Covariates", y = "%")+
+  coord_flip()+
+    theme(legend.position = "none")
+```
+
+#### Covariates list an description
+###### Task: *Please suggest adding/removing covariates from the list.*
+
+
+```{r echo=FALSE}
+
+ kable(cov_bcr81, format="html", escape = F, align = "c")%>%
+     kableExtra::kable_paper("hover", full_width = F) %>%
+  kableExtra::scroll_box(width = "100%", height = "450px")%>%
+  kableExtra::kable_styling(position = "center")
+```
+
+```{r, echo=FALSE}
+reactable <- function(...) {
+  htmltools::tagList(reactable::reactable(...))
+  
+}
+```
+
+```{r echo=FALSE}
+cov_table <- reactable(cov_bcr81,  highlight = TRUE, defaultPageSize = 4, searchable = TRUE,
+          defaultSorted = c("Covariate.label", "Category", "Description"),
+          filterable = TRUE)
+```
+
+```{r, warning=FALSE, message=FALSE}
+cov_table
+```
+
+## 3. Data Preparation
+
+## 4. Model fitting
+
+## 5. Predictions
+
+#### Mean density map
+
+This map shows estimates of the number of males per hectare.
+
+###### *Task: Please identify areas that are too high or too low density, if any.*
+
+```{r echo=FALSE}
+
+bcr_boundary <- terra::vect("./data/BAM_BCR_NationalModel.shp")
+
+BBWA_can71_2020 <- terra::rast("./data/BBWA/BBWA_can71_2020.tiff")
+
+BBWA_can81_2020 <- terra::rast("./data/BBWA/BBWA_can81_2020.tiff")
+
+
+
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+ggplot(bcr_boundary[bcr_boundary$subUnit==71])+
+  geom_spatraster(data=BBWA_can71_2020$mean)+
+   geom_spatvector(fill = NA)+
+   theme_minimal() +
+   scale_fill_whitebox_c(
+    palette = "deep",
+    n.breaks = 4
+  )+
+   labs(
+    fill = "Mean",
+    title = "Spatial predictions",
+    subtitle = "BBWA-Bay-breasted Warbler, BCR-71"
+  )
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+ggplot(bcr_boundary[bcr_boundary$subUnit==81])+
+  geom_spatraster(data=BBWA_can81_2020$mean)+
+   geom_spatvector(fill = NA)+
+   theme_minimal() +
+   scale_fill_whitebox_c(
+    palette = "deep",
+    n.breaks = 4
+  )+
+   labs(
+    fill = "Mean",
+    title = "Spatial uncertainty",
+    subtitle = "BBWA-Bay-breasted Warbler, BCR-81"
+  )
+```
+
+#### Extrapolation map
+
+This map shows.................. \###### Task: *Are here areas that are surprising?*
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+ggplot(bcr_boundary[bcr_boundary$subUnit==71])+
+ geom_spatraster(data=BBWA_can71_2020$extrapolation)+
+   geom_spatvector(fill = NA)+
+   theme_minimal() +
+   scale_fill_whitebox_c(
+    palette = "deep",
+    n.breaks = 2
+  )+
+   labs(
+    fill = "Binary",
+    title = "Extrapolation map",
+    subtitle = "BBWA-Bay-breasted Warbler, BCR-71"
+  )
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+ggplot(bcr_boundary[bcr_boundary$subUnit==81])+
+ geom_spatraster(data=BBWA_can81_2020$extrapolation)+
+   geom_spatvector(fill = NA)+
+   theme_minimal() +
+   scale_fill_whitebox_c(
+    palette = "deep",
+    n.breaks = 2
+  )+
+   labs(
+    fill = "Binary",
+    title = "Extrapolation map",
+    subtitle = "BBWA-Bay-breasted Warbler, BCR-81"
+  )
+```
+
+## 6. Uncertainty
+
+#### Coefficient of variation
+
+###### Task: *Are here areas that are surprising?*
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+ggplot(bcr_boundary[bcr_boundary$subUnit==71])+
+  geom_spatraster(data=BBWA_can71_2020$cv)+
+   geom_spatvector(fill = NA)+
+   theme_minimal() +
+   scale_fill_whitebox_c(
+    palette = "muted",
+    n.breaks = 5
+  )+
+   labs(
+    fill = "Coefficient \nof variation",
+    title = "Spatial uncertainty",
+    subtitle = "BBWA-Bay-breasted Warbler, BCR-71"
+  )
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+ggplot(bcr_boundary[bcr_boundary$subUnit==81])+
+  geom_spatraster(data=BBWA_can81_2020$cv)+
+   geom_spatvector(fill = NA)+
+   theme_minimal() +
+   scale_fill_whitebox_c(
+    palette = "muted",
+    n.breaks = 5
+  )+
+   labs(
+    fill = "Coefficient \nof variation",
+    title = "Spatial uncertainty",
+    subtitle = "BBWA-Bay-breasted Warbler, BCR-81"
+  )
+```
+:::
