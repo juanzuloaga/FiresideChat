@@ -46,10 +46,14 @@ setwd("C:/FiresideChat/")
 #Loading master file and selecting ecoregions c71 & c81
 load("./data/04_NM5.0_data_stratify.R")
 
+#Transofrm bird objec from matrix to df
+bird_d <- as.data.frame(as.matrix(bird))
+
 # Saving single .cvs files from the R.Dataset (too big and reduce PC performance)
 write.csv(bcrlist,"./data/bcrlist.csv" )
 write.csv(covlist, "./data/covlist.csv")
-write.csv(covlist_sel, "./covlist_sel.csv")
+write.csv(bird_d, "./data.bird_d.csv")
+
 
 
 ```
@@ -58,56 +62,57 @@ write.csv(covlist_sel, "./covlist_sel.csv")
 ## 1. Species
 
 ### Histogram of counts
+
 This is an histogram of raw count from data sets included in the model.
 
-#### Task: *We would like to know if there are outliers and/or a truncation value that modelers might be aware of.*
+::: callout-important
+## Task:
 
-...........
+We would like to know if there are outliers and/or a truncation value that modelers might be aware of.
+:::
 
 ```{r echo=FALSE, eval=F}
 
+#loading csv files (these are small)
+bcrlist <- read.csv("./data/bcrlist.csv")
+bird_d <- read.csv("./data/bird_d.csv")
+
+# Selecting BCRs 71 and 81 that are TRUE
 bcrlist_sel <- dplyr::select(bcrlist, id, can71, can81)%>%
 dplyr::filter(can71 == "TRUE" & can81=="TRUE")
 
-bird_d <- as.data.frame(as.matrix(bird))
-str(bird_d)
+# Merging bcrlist_sel and bird_d by id
 
-t5 <- rowid_to_column(bird_d)
-dim(bird)
-
-write.csv(bcrlist_sel, "./data/bcrlist_sel.csv")
-write.csv(bird_d, "./data/bird_d.csv")
-
-
-
-
+ 
 ```
 
 ```{r echo=FALSE, eval=FALSE}
 
-bcrlist_sel <- read.csv("./data/bcrlist_sel.csv")
-bird_d <- read.csv("./data/bird_d.csv")
+
 
 #merge_birds <- merge(bcrlist_sel, bird_d)
 
 ```
 
-
 ### Temporal distribution of detections (time relative to sunrise, ordinal day)
+
 This is the temporal distribution of detections.
 
-#### Task: *We would like to know if there are outliers and/or a truncation value that modelers might be aware of.*
+::: callout-important
+## Task: 
 
+We would like to know if there are outliers and/or a truncation value that modelers might be aware of.
+:::
 
 ### Training data
+
 This is the training data.........
 
-#### Task: *Please identify misidentifications, migratory individuals, or surprises*
+::: callout-important
+## Task:
 
-
-#### Please add your comments
-
-.......
+Please identify misidentifications, migratory individuals, or surprises
+:::
 
 ## 2. Covariates
 
@@ -132,7 +137,11 @@ cov_bcr81 <- filter(merge_cov, bcr == "can81")
 
 ### Covariates relative importance BCR 71 (mean 10 bootstraps)
 
-###### Task: *Please re-rank covariates and/or suggest expected relative importance and/or percentage (%).*
+::: callout-important
+## Task
+
+Please re-rank covariates and/or suggest expected relative importance and/or percentage (%).
+:::
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 
@@ -164,8 +173,12 @@ ggplot(data=df_bootstrap_mean, aes(x=reorder(var, mean), y=mean, fill=mean))+
 ```
 
 #### Covariates list an description
-###### Task: *Please suggest adding/removing covariates from the list.*
 
+::: callout-important
+## Task:
+
+Task: Please suggest adding/removing covariates from the list.
+:::
 
 ```{r echo=FALSE}
 
@@ -176,8 +189,12 @@ ggplot(data=df_bootstrap_mean, aes(x=reorder(var, mean), y=mean, fill=mean))+
 ```
 
 ### Covariates relative importance BCR 81 (mean 10 boostraps)
-###### Task: *Please re-rank covariates and/or suggest expected relative importance and/or percentage (%).*
 
+::: callout-important
+## Task:
+
+Please re-rank covariates and/or suggest expected relative importance and/or percentage (%).
+:::
 
 ```{r echo=FALSE}
 
@@ -209,8 +226,12 @@ ggplot(data=df_bootstrap_mean, aes(x=reorder(var, mean), y=mean, fill=mean))+
 ```
 
 #### Covariates list an description
-###### Task: *Please suggest adding/removing covariates from the list.*
 
+::: callout-important
+## Task:
+
+Please suggest adding/removing covariates from the list.
+:::
 
 ```{r echo=FALSE}
 
@@ -247,7 +268,11 @@ cov_table
 
 This map shows estimates of the number of males per hectare.
 
-###### *Task: Please identify areas that are too high or too low density, if any.*
+::: callout-important
+## Task:
+
+Please identify areas that are too high or too low density, if any.
+:::
 
 ```{r echo=FALSE}
 
@@ -297,7 +322,13 @@ ggplot(bcr_boundary[bcr_boundary$subUnit==81])+
 
 #### Extrapolation map
 
-This map shows.................. \###### Task: *Are here areas that are surprising?*
+This map shows.................. \#####
+
+::: callout-important
+## Task:
+
+Please identify any areas that are surprising for you.
+:::
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 
@@ -337,7 +368,11 @@ ggplot(bcr_boundary[bcr_boundary$subUnit==81])+
 
 #### Coefficient of variation
 
-###### Task: *Are here areas that are surprising?*
+::: callout-important
+## Task;
+
+Please identify any areas that are surprising for you.
+:::
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 
