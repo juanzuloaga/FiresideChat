@@ -1,2 +1,2 @@
-This is a (document]()) to support the FiresideChat event.  
+This is a (document](https://juanzuloaga.github.io/FiresideChat/)) to support the FiresideChat event.  
 
