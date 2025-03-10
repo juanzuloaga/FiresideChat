@@ -63,21 +63,32 @@ names(bird_d)[1] <- "id"
 # Merging bcrlist_sel and bird_d by id
 birds_merged_can71 <- merge(bcrlist_can71, bird_d, by="id")%>%
    subset(select = c("id",  "BBWA")) |> 
-  dplyr::filter(BBWA > 0)
+  mutate(BBWA=as.numeric(BBWA)) |> 
+  dplyr::filter(BBWA > 0) |> 
+  rename(count = BBWA)
   
 birds_merged_can81 <- merge(bcrlist_can81, bird_d, by="id")%>%
    subset(select = c("id", "BBWA")) |> 
-  dplyr::filter(BBWA > 0)
+    mutate(BBWA=as.numeric(BBWA)) |> 
+  dplyr::filter(BBWA > 0) |> 
+  rename(count = BBWA)
 
 # TASK 2. TEMPORAL DISTRIBUTION OF DETECTIONS
 # selecting the DATE
 visit_detections_can71 <- merge(bcrlist_can71, visit, by="id")%>%
-   subset(select = c("id", "tssr", "jday")) |> 
-  rename(ordinal_day = jday, time_since_sunrise = tssr)
+  inner_join(birds_merged_can71) |> 
+   subset(select = c("id", "tssr", "jday", "count", "lat", "lon")) |> 
+  pivot_longer(jday:tssr, names_to="metric", values_to="value") |> 
+  mutate(metric = factor(metric, levels = c("tssr", "jday"),
+                            labels = c("Time since sunrise", "Ordinal day")))
 
 visit_detections_can81 <- merge(bcrlist_can81, visit, by="id")%>%
+    inner_join(birds_merged_can71) |> 
+   subset(select = c("id", "tssr", "jday", "count", "lat", "lon")) |> 
    subset(select = c("id", "tssr", "jday")) |> 
-  rename(ordinal_day = jday, time_since_sunrise = tssr)
+  pivot_longer(jday:tssr, names_to="metric", values_to="value") |> 
+  mutate(metric = factor(metric, levels = c("tssr", "jday"),
+                            labels = c("Time since sunrise", "Ordinal day")))
 
 ```
 
@@ -121,9 +132,9 @@ This is an histogram of raw count from data sets included in the model.
 
 # Histogram
 
-ggplot(birds_merged_can71, aes(x=id))+
+ggplot(birds_merged_can71, aes(x=count))+
   geom_histogram()+
-  labs(x="id", y = "Counts (males per hectare")+
+  labs(x="Count of birds observed", y = "Number of surveys with detections")+
   theme(axis.text=element_text(size=14))+
   theme(axis.title = element_text(size = 16))
  
@@ -154,9 +165,10 @@ This is the temporal distribution of detections.
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 # Histogram
 
-ggplot(visit_detections_can71, aes(x=ordinal_day))+
+ggplot(visit_detections_can71, aes(x=value))+
   geom_histogram()+
-  labs(x="Ordinal day", y = "Counts")+
+  labs(x="", y = "Number of surveys with detections")+
+  facet_wrap(~metric, scales="free") +
   theme(axis.text=element_text(size=14))+
   theme(axis.title = element_text(size = 16))
 
