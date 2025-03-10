@@ -63,32 +63,33 @@ names(bird_d)[1] <- "id"
 # Merging bcrlist_sel and bird_d by id
 birds_merged_can71 <- merge(bcrlist_can71, bird_d, by="id")%>%
    subset(select = c("id",  "BBWA")) |> 
-  mutate(BBWA=as.numeric(BBWA)) |> 
-  dplyr::filter(BBWA > 0) |> 
+    mutate(BBWA=as.numeric(BBWA),
+           detection = ifelse(BBWA > 0, 1, 0)) |> 
   rename(count = BBWA)
   
 birds_merged_can81 <- merge(bcrlist_can81, bird_d, by="id")%>%
    subset(select = c("id", "BBWA")) |> 
-    mutate(BBWA=as.numeric(BBWA)) |> 
-  dplyr::filter(BBWA > 0) |> 
+    mutate(BBWA=as.numeric(BBWA),
+           detection = ifelse(BBWA > 0, 1, 0)) |> 
   rename(count = BBWA)
 
 # TASK 2. TEMPORAL DISTRIBUTION OF DETECTIONS
 # selecting the DATE
 visit_detections_can71 <- merge(bcrlist_can71, visit, by="id")%>%
   inner_join(birds_merged_can71) |> 
-   subset(select = c("id", "tssr", "jday", "count", "lat", "lon")) |> 
-  pivot_longer(jday:tssr, names_to="metric", values_to="value") |> 
+   subset(select = c("id", "tssr", "jday", "count", "detection", "lat", "lon")) |> 
+  pivot_longer(c(jday, tssr), names_to="metric", values_to="value") |> 
   mutate(metric = factor(metric, levels = c("tssr", "jday"),
-                            labels = c("Time since sunrise", "Ordinal day")))
+                            labels = c("Time since sunrise", "Ordinal day")),
+         detection = factor(detection, levels=c(0, 1), labels = c("Undetected", "Detected")))
 
 visit_detections_can81 <- merge(bcrlist_can81, visit, by="id")%>%
     inner_join(birds_merged_can71) |> 
-   subset(select = c("id", "tssr", "jday", "count", "lat", "lon")) |> 
-   subset(select = c("id", "tssr", "jday")) |> 
-  pivot_longer(jday:tssr, names_to="metric", values_to="value") |> 
+   subset(select = c("id", "tssr", "jday", "count", "detection", "lat", "lon")) |> 
+  pivot_longer(c(jday, tssr), names_to="metric", values_to="value") |> 
   mutate(metric = factor(metric, levels = c("tssr", "jday"),
-                            labels = c("Time since sunrise", "Ordinal day")))
+                            labels = c("Time since sunrise", "Ordinal day")),
+         detection = factor(detection, levels=c(0, 1), labels = c("Undetected", "Detected")))
 
 ```
 
@@ -132,7 +133,7 @@ This is an histogram of raw count from data sets included in the model.
 
 # Histogram
 
-ggplot(birds_merged_can71, aes(x=count))+
+ggplot(dplyr::filter(birds_merged_can71, count > 0), aes(x=count))+
   geom_histogram()+
   labs(x="Count of birds observed", y = "Number of surveys with detections")+
   theme(axis.text=element_text(size=14))+
@@ -167,8 +168,8 @@ This is the temporal distribution of detections.
 
 ggplot(visit_detections_can71, aes(x=value))+
   geom_histogram()+
-  labs(x="", y = "Number of surveys with detections")+
-  facet_wrap(~metric, scales="free") +
+  labs(x="", y = "Number of surveys")+
+  facet_grid(detection~metric, scales="free") +
   theme(axis.text=element_text(size=14))+
   theme(axis.title = element_text(size = 16))
 
@@ -200,12 +201,9 @@ Please use the map below to visualize species data
 
 ```{r echo=FALSE}
 
-locations <- st_as_sf(visit, coords =  c("lon", "lat"), crs=4326)%>%
-  terra::vect()%>%
+locations_can71 <- st_as_sf(visit_detections_can71, coords=c("lon", "lat"), crs=4326) |> 
+  terra::vect() |> 
   terra::project(crs(bcr_boundary))
-
-locations_can71 <- terra::mask(locations, bcr_boundary[bcr_boundary$subUnit==71])%>%
-  terra::crop(bcr_boundary[bcr_boundary$subUnit==71])
 
 #locations_can81 <- terra::mask(locations, bcr_boundary[bcr_boundary$subUnit==81])%>%
  # terra::crop(bcr_boundary[bcr_boundary$subUnit==81])
@@ -396,10 +394,10 @@ This map below shows the (EXTRAPOLTAION layer)..................
                 )%>%
   # Adding species data
     addCircleMarkers(data=terra::project(locations_can71, "epsg:4326"),
-                     fillColor = ~pal(locations_can71$year),
+                     fillColor = ~pal(locations_can71$count),
                      weight = 0.5,
                      radius = 2, 
-                     color = ~pal(locations_can71$year),
+                     color = ~pal(locations_can71$count),
                      group="Species_data")%>%
      
   # Adding legend species data
