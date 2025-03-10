@@ -5,36 +5,39 @@ format:
     link-external-icon: true
     link-external-newwindow: true
 toc: true
-date-modified: last-modified
 editor: visual
+css: styles.css
 ---
 
 ## FiresideChat
 
-Dear Evaluator, we would your feedback on Species Distribution Models (SDMs) inputs and outputs for several species in Ontario (see list below).
+Dear Evaluator, we would your feedback on Species Distribution Models (SDMs) inputs and outputs for several species (see list below) in two ecoregions in Canada (see map below).
+
+This exercise and your valuable feedback will help in two ways: 1) modelers will use your feedback to improve model predictions, and 2) help us to develop an interactive tool for model evaluation (see tool context below).
 
 ## Species for Evaluation
 
-This website provides information about the SPECIES (see list below) and EXPECTED FEEDBACK (you can provide your feedback using this [spreadsheet](https://docs.google.com/spreadsheets/d/17lQl2bk7XmVAIaGmPszP07rHPgKHJkAihRo_HyM_MC0/edit?gid=0#gid=0)).
+Select the SPECIES and REGION (see list below) you want to provide feedback!
 
-Please select species you want to provide feedback.........
+Notice there are two separate files for each species, corresponding to two regions for evaluation.
 
-| Species code      | Species name                     |
-|-------------------|----------------------------------|
-| ATTW              | *American Three-toed Woodpecker* |
-| [BBWA](BBWA.html) | *Bay-breasted Warbler*           |
-| BBWO              | *Black-backed Woodpecker*        |
-| CMWA              | *Cape May Warbler*               |
-| CONW              | *Connecticut Warbler*            |
-| LEYE              | *Lesser Yellowlegs*              |
-| OSFL              | *Olive-sided Flycatcher*         |
-| SOSA              | *Solitary Sandpiper*             |
-| TEWA              | *Tennessee Warbler*              |
-| CONI              | *Common Nighthawk*               |
-| EWPW              | *Eastern Whip-poor-will*         |
-| LESA              | *Least Sandpiper*                |
-| SBDO              | *Short-billed Dowitcher*         |
-| BLPL              |                                  |
+| Species code | Species name                     | Region              |
+|--------------|----------------------------------|---------------------|
+| ATTW         | *American Three-toed Woodpecker* |                     |
+| BBWA         | *Bay-breasted Warbler*           | [BCR-71](BBWA.html) |
+|              |                                  | BCR-81              |
+| BBWO         | *Black-backed Woodpecker*        |                     |
+| CMWA         | *Cape May Warbler*               |                     |
+| CONW         | *Connecticut Warbler*            |                     |
+| LEYE         | *Lesser Yellowlegs*              |                     |
+| OSFL         | *Olive-sided Flycatcher*         |                     |
+| SOSA         | *Solitary Sandpiper*             |                     |
+| TEWA         | *Tennessee Warbler*              |                     |
+| CONI         | *Common Nighthawk*               |                     |
+| EWPW         | *Eastern Whip-poor-will*         |                     |
+| LESA         | *Least Sandpiper*                |                     |
+| SBDO         | *Short-billed Dowitcher*         |                     |
+| BLPL         |                                  |                     |
 
 ## Study regions
 
@@ -42,7 +45,11 @@ BCRs 71 and 81
 
 ![](data/BCRupdatesBAM.png)
 
-## Context
+## Model context
+
+Elly.......I think we need to provide a short overview on why these models were built? context? (forestry, ??) how? what kind of data sets were used?, etc..
+
+## Tool context
 
 Our aim is to develop and interactive and quantitative tool for improving SDMs and evaluating information needs for multiple applications. This tool will foster collaboration among multiple partners and users form model improvement and decision making (see roles below).
 

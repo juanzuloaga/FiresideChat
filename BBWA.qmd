@@ -1,19 +1,18 @@
 ---
-title: "BBWA (Bay-breasted Warbler)"
+title: "BBWA (Bay-breasted Warbler): Region BCR-71"
 format:
   html:
     self-contained: true
     link-external-icon: true
     link-external-newwindow: true
-toc: true
-date-modified: last-modified
+    hide:
+      - toc
+      - navigation
 editor: visual
 css: styles.css
 ---
 
-Please add your feedback on each section of the model cycle.
-
-Use this spreadsheet to add your comments..........
+Use THIS FORM [BBWA-BCR-71](https://docs.google.com/forms/d/1xhekH7fj2461LX_AAbN8Md1mLibKmaGo4mF_FexQm3M/edit) to provide your feedback on each section of the model cycle.
 
 ```{r echo=F, message=F, warning=FALSE}
 # Setting working directory
@@ -33,115 +32,203 @@ library(DT)
 library(gbm)
 library(wrapr)
 library(reactable)
-
-
-
-```
-
-```{r echo=FALSE, eval=FALSE}
+library(lubridate)
+library(openxlsx)
+library(shiny)
+library(widgetframe)
+library(leafem)
+library(tidyverse)
 
 # Setting working directory
 setwd("C:/FiresideChat/")
 
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+# TASK 1. HISTOGRAM COUNTS
 #Loading master file and selecting ecoregions c71 & c81
-load("./data/04_NM5.0_data_stratify.R")
+load("./data/04_NM5.0_data_stratify_7181.R")
+
+# Selecting BCRs 71 and 81 that are TRUE
+bcrlist_can71 <- dplyr::select(bcrlist, id, can71)%>%
+dplyr::filter(can71 == "TRUE")
+
+bcrlist_can81 <- dplyr::select(bcrlist, id, can81)%>%
+dplyr::filter(can81 == "TRUE")
 
 #Transofrm bird objec from matrix to df
 bird_d <- as.data.frame(as.matrix(bird))
+names(bird_d)[1] <- "id"
 
-# Saving single .cvs files from the R.Dataset (too big and reduce PC performance)
-write.csv(bcrlist,"./data/bcrlist.csv" )
-write.csv(covlist, "./data/covlist.csv")
-write.csv(bird_d, "./data.bird_d.csv")
+# Merging bcrlist_sel and bird_d by id
+birds_merged_can71 <- merge(bcrlist_can71, bird_d, by="id")%>%
+   subset(select = c("id",  "BBWA"))
+  
+birds_merged_can81 <- merge(bcrlist_can81, bird_d, by="id")%>%
+   subset(select = c("id", "BBWA"))
 
+# TASK 2. TEMPORAL DISTRIBUTION OF DETECTIONS
+# selecting the DATE
+visit_detections_can71 <- merge(bcrlist_can71, visit, by="id")%>%
+   subset(select = c("id", "date"))%>%
+  dplyr::mutate(ordinal_day = lubridate::yday(date))
+
+visit_detections_can81 <- merge(bcrlist_can81, visit, by="id")%>%
+   subset(select = c("id", "date"))%>%
+  dplyr::mutate(ordinal_day = lubridate::yday(date))
+
+```
+
+```{r echo=FALSE}
+
+# Boundaries regions
+bcr_boundary <- terra::vect("./data/BAM_BCR_NationalModel.shp")
+
+# Boundary geographic for interactive leaflet
+bcr_boundary_wgs84 <- terra::project(bcr_boundary, "epsg:4326")
+
+# raster stack
+BBWA_can71_2020 <- terra::rast("./data/BBWA/BBWA_can71_2020.tiff")
+BBWA_can81_2020 <- terra::rast("./data/BBWA/BBWA_can81_2020.tiff")
 
 
 ```
 
 ::: panel-tabset
-## 1. Species
+## 1. SPECIES
 
-### Histogram of counts
+::: {.callout-note collapse="true"}
+## a. Histogram of counts
+
+::: {style="display: flex;"}
+<div>
+
+**Task:**
+
+We would like to know if there are outliers and/or a truncation value that modelers might be aware of.
+
+</div>
+
+<div>
+
+**Description:**
 
 This is an histogram of raw count from data sets included in the model.
 
-::: callout-important
-## Task:
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 
-We would like to know if there are outliers and/or a truncation value that modelers might be aware of.
+# Histogram
+
+ggplot(birds_merged_can71, aes(x=id))+
+  geom_histogram()+
+  labs(x="id", y = "Counts (males per hectare")+
+  theme(axis.text=element_text(size=14))+
+  theme(axis.title = element_text(size = 16))
+ 
+```
+
+</div>
+:::
 :::
 
-```{r echo=FALSE, eval=F}
+::: {.callout-note collapse="true"}
+## b. Temporal distribution of detections (time relative to sunrise, ordinal day)
 
-#loading csv files (these are small)
-bcrlist <- read.csv("./data/bcrlist.csv")
-bird_d <- read.csv("./data/bird_d.csv")
+::: {style="display: flex;"}
+<div>
 
-# Selecting BCRs 71 and 81 that are TRUE
-bcrlist_sel <- dplyr::select(bcrlist, id, can71, can81)%>%
-dplyr::filter(can71 == "TRUE" & can81=="TRUE")
+**Task:**
 
-# Merging bcrlist_sel and bird_d by id
+We would like to know if there are outliers and/or a truncation value that modelers might be aware of.
+
+</div>
+
+<div>
+
+**Description:**
+
+This is the temporal distribution of detections.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Histogram
+
+ggplot(visit_detections_can71, aes(x=ordinal_day))+
+  geom_histogram()+
+  labs(x="Ordinal day", y = "Counts")+
+  theme(axis.text=element_text(size=14))+
+  theme(axis.title = element_text(size = 16))
+
 
  
 ```
 
-```{r echo=FALSE, eval=FALSE}
+</div>
+:::
+:::
 
+::: {.callout-note collapse="true"}
+## c. Training data
 
+::: {style="display: flex;"}
+<div>
 
-#merge_birds <- merge(bcrlist_sel, bird_d)
+**Task:**
+
+Please identify misidentifications, migratory individuals, or surprises
+
+</div>
+
+<div>
+
+**Description:**
+
+Please use the map below to visualize species data
+
+```{r echo=FALSE}
+
+locations <- st_as_sf(visit, coords =  c("lon", "lat"), crs=4326)%>%
+  terra::vect()%>%
+  terra::project(crs(bcr_boundary))
+
+locations_can71 <- terra::mask(locations, bcr_boundary[bcr_boundary$subUnit==71])%>%
+  terra::crop(bcr_boundary[bcr_boundary$subUnit==71])
+
+#locations_can81 <- terra::mask(locations, bcr_boundary[bcr_boundary$subUnit==81])%>%
+ # terra::crop(bcr_boundary[bcr_boundary$subUnit==81])
+
 
 ```
 
-### Temporal distribution of detections (time relative to sunrise, ordinal day)
-
-This is the temporal distribution of detections.
-
-::: callout-important
-## Task: 
-
-We would like to know if there are outliers and/or a truncation value that modelers might be aware of.
+</div>
+:::
 :::
 
-### Training data
+## 2. COVARIATES
 
-This is the training data.........
-
-::: callout-important
-## Task:
-
-Please identify misidentifications, migratory individuals, or surprises
-:::
-
-## 2. Covariates
-
-```{r echo=FALSE}
-covlist <- read.csv("./data/covlist.csv")
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+#covlist <- read.csv("./data/covlist.csv")
 #covlist_sel <- read.csv("./covlist_sel.csv")
-
 
 covlist_sel <- dplyr::filter(covlist, bcr %in% c("can71", "can81"))%>%
   dplyr::select(where(~ last(.x) != "FALSE"))%>%
   reshape2::melt(id.vars =  "bcr")
  names(covlist_sel)[2] <- "Covariate.label"
 
-cov_label <- read.csv("./data/covariates_label_insert.csv", header=T)
+cov_label <- read.xlsx("./data/covariates_label_insert.xlsx")
 
 merge_cov <- merge(covlist_sel, cov_label, by="Covariate.label")
-cov_bcr71 <- filter(merge_cov, bcr == "can71")
+cov_bcr71 <- filter(merge_cov, bcr == "can71")%>%
+  dplyr::select(Covariate.label, Category, Description)
 cov_bcr81 <- filter(merge_cov, bcr == "can81")
-
 
 ```
 
-### Covariates relative importance BCR 71 (mean 10 bootstraps)
+::: {.callout-note collapse="true"}
+## a. Covariates relative importance
 
-::: callout-important
-## Task
+**Task:** Please re-rank covariates and/or suggest expected relative importance and/or percentage (%).
 
-Please re-rank covariates and/or suggest expected relative importance and/or percentage (%).
-:::
+**Description:** Covariates relative importance (mean 10 bootstraps)
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 
@@ -158,253 +245,207 @@ df_bootstrap <- do.call(rbind,
 
 df_bootstrap_mean <- dplyr::summarise(df_bootstrap, .by=var, mean=mean(rel.inf))
 
+df_bootstrap_sd <- dplyr::summarise(df_bootstrap, .by=var, sd=sd(rel.inf))
 
+n = length(df_bootstrap$rel.inf)
 
-```
+df_bootstrap_sd$se <- df_bootstrap_sd$sd / sqrt(n)
 
-```{r echo=FALSE, fig.height=6}
-
-ggplot(data=df_bootstrap_mean, aes(x=reorder(var, mean), y=mean, fill=mean))+
-           geom_bar(stat = "identity", fill="gray") + 
-   labs(title = "Covariates relative importance",
-        x = "Covariates", y = "%")+
-  coord_flip()+
-    theme(legend.position = "none")
-```
-
-#### Covariates list an description
-
-::: callout-important
-## Task:
-
-Task: Please suggest adding/removing covariates from the list.
-:::
-
-```{r echo=FALSE}
-
- kable(cov_bcr71, format="html", escape = F, align = "c")%>%
-     kableExtra::kable_paper("hover", full_width = F) %>%
-  kableExtra::scroll_box(width = "100%", height = "450px")%>%
-  kableExtra::kable_styling(position = "center")
-```
-
-### Covariates relative importance BCR 81 (mean 10 boostraps)
-
-::: callout-important
-## Task:
-
-Please re-rank covariates and/or suggest expected relative importance and/or percentage (%).
-:::
-
-```{r echo=FALSE}
-
-list_bootstraps <- list.files("./data/BBWA/covariates_bootstrps/can_81",
-                             pattern=".R",
-                             full.names = T)
-
-df_bootstrap <- do.call(rbind,
-               lapply(list_bootstraps, function(x) {
-                 
-                 load(file = x)
-                gbm::summary.gbm(b.i, plotit = F)
-               }))
-
-df_bootstrap_mean <- dplyr::summarise(df_bootstrap, .by=var, mean=mean(rel.inf))
-
-
+df_bootstrap_merge <- merge(df_bootstrap_mean, df_bootstrap_sd, by="var")
 
 ```
 
 ```{r echo=FALSE, fig.height=6}
 
-ggplot(data=df_bootstrap_mean, aes(x=reorder(var, mean), y=mean, fill=mean))+
+ggplot(data=df_bootstrap_merge, aes(x=reorder(var, mean), y=mean, fill=mean))+
            geom_bar(stat = "identity", fill="gray") + 
    labs(title = "Covariates relative importance",
         x = "Covariates", y = "%")+
   coord_flip()+
-    theme(legend.position = "none")
+    theme(legend.position = "none")+
+  geom_errorbar(
+    aes(ymin = mean - se, ymax = mean + se), 
+    position = position_dodge2(padding = 0.5))
 ```
-
-#### Covariates list an description
-
-::: callout-important
-## Task:
-
-Please suggest adding/removing covariates from the list.
 :::
 
-```{r echo=FALSE}
+::: {.callout-note collapse="true"}
+## b. Covariates list and description
 
- kable(cov_bcr81, format="html", escape = F, align = "c")%>%
-     kableExtra::kable_paper("hover", full_width = F) %>%
-  kableExtra::scroll_box(width = "100%", height = "450px")%>%
-  kableExtra::kable_styling(position = "center")
-```
+**Task:** Task: Please suggest adding/removing covariates from the list.
 
-```{r, echo=FALSE}
-reactable <- function(...) {
-  htmltools::tagList(reactable::reactable(...))
-  
-}
-```
+**Description:** List of covariates used in model fitting
 
 ```{r echo=FALSE}
-cov_table <- reactable(cov_bcr81,  highlight = TRUE, defaultPageSize = 4, searchable = TRUE,
-          defaultSorted = c("Covariate.label", "Category", "Description"),
-          filterable = TRUE)
-```
 
-```{r, warning=FALSE, message=FALSE}
+
+cov_table <- htmltools::tagList(DT::datatable(cov_bcr71, filter='top',  rownames = F, escape = F), options = list(
+  pageLength = 5, autoWidth = TRUE
+))
+
+
+
+```
+:::
+
+```{r}
 cov_table
 ```
 
-## 3. Data Preparation
+## 3. DATA PREPARATION
 
-## 4. Model fitting
+3.1. Species
 
-## 5. Predictions
+3.2. Covariates
 
-#### Mean density map
+Coming soon!
 
-This map shows estimates of the number of males per hectare.
+## 4. MODEL FITTING
 
-::: callout-important
-## Task:
+Coming soon!
+
+## 5. PREDICTIONS
+
+::: {.callout-note collapse="true"}
+## a. Mean density map
+
+**Task:**
 
 Please identify areas that are too high or too low density, if any.
+
+**Description:**
+
+This map below shows estimates predicitons (PREDICTION layer) of the number of males per hectare ???????
 :::
 
-```{r echo=FALSE}
+## 6. UNCERTAINTY
 
-bcr_boundary <- terra::vect("./data/BAM_BCR_NationalModel.shp")
+::: {.callout-note collapse="true"}
+## a. Coefficient of variation
 
-BBWA_can71_2020 <- terra::rast("./data/BBWA/BBWA_can71_2020.tiff")
-
-BBWA_can81_2020 <- terra::rast("./data/BBWA/BBWA_can81_2020.tiff")
-
-
-
-```
-
-```{r echo=FALSE, warning=FALSE, message=FALSE}
-
-ggplot(bcr_boundary[bcr_boundary$subUnit==71])+
-  geom_spatraster(data=BBWA_can71_2020$mean)+
-   geom_spatvector(fill = NA)+
-   theme_minimal() +
-   scale_fill_whitebox_c(
-    palette = "deep",
-    n.breaks = 4
-  )+
-   labs(
-    fill = "Mean",
-    title = "Spatial predictions",
-    subtitle = "BBWA-Bay-breasted Warbler, BCR-71"
-  )
-```
-
-```{r echo=FALSE, warning=FALSE, message=FALSE}
-
-ggplot(bcr_boundary[bcr_boundary$subUnit==81])+
-  geom_spatraster(data=BBWA_can81_2020$mean)+
-   geom_spatvector(fill = NA)+
-   theme_minimal() +
-   scale_fill_whitebox_c(
-    palette = "deep",
-    n.breaks = 4
-  )+
-   labs(
-    fill = "Mean",
-    title = "Spatial uncertainty",
-    subtitle = "BBWA-Bay-breasted Warbler, BCR-81"
-  )
-```
-
-#### Extrapolation map
-
-This map shows.................. \#####
-
-::: callout-important
-## Task:
+**Task:**
 
 Please identify any areas that are surprising for you.
+
+**Description:**
+
+Use the map below to visualize the UNCERTAINTY layer (i.e., the coefficient of variation 'CV' of 10 models). Areas with low Uncertainty will display high CV values.
 :::
 
-```{r echo=FALSE, warning=FALSE, message=FALSE}
+::: {.callout-note collapse="true"}
+## b. Extrapolation map
 
-ggplot(bcr_boundary[bcr_boundary$subUnit==71])+
- geom_spatraster(data=BBWA_can71_2020$extrapolation)+
-   geom_spatvector(fill = NA)+
-   theme_minimal() +
-   scale_fill_whitebox_c(
-    palette = "deep",
-    n.breaks = 2
-  )+
-   labs(
-    fill = "Binary",
-    title = "Extrapolation map",
-    subtitle = "BBWA-Bay-breasted Warbler, BCR-71"
-  )
-```
-
-```{r echo=FALSE, warning=FALSE, message=FALSE}
-
-ggplot(bcr_boundary[bcr_boundary$subUnit==81])+
- geom_spatraster(data=BBWA_can81_2020$extrapolation)+
-   geom_spatvector(fill = NA)+
-   theme_minimal() +
-   scale_fill_whitebox_c(
-    palette = "deep",
-    n.breaks = 2
-  )+
-   labs(
-    fill = "Binary",
-    title = "Extrapolation map",
-    subtitle = "BBWA-Bay-breasted Warbler, BCR-81"
-  )
-```
-
-## 6. Uncertainty
-
-#### Coefficient of variation
-
-::: callout-important
-## Task;
+**Task:**
 
 Please identify any areas that are surprising for you.
+
+**Description:**
+
+Extrapolation represents ......and was calculated ....
+
+This map below shows the (EXTRAPOLTAION layer)..................
 :::
+:::
+
+## MAPS
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 
-ggplot(bcr_boundary[bcr_boundary$subUnit==71])+
-  geom_spatraster(data=BBWA_can71_2020$cv)+
-   geom_spatvector(fill = NA)+
-   theme_minimal() +
-   scale_fill_whitebox_c(
-    palette = "muted",
-    n.breaks = 5
-  )+
-   labs(
-    fill = "Coefficient \nof variation",
-    title = "Spatial uncertainty",
-    subtitle = "BBWA-Bay-breasted Warbler, BCR-71"
-  )
+#  SPECIES DATA
+
+  # Pallete
+    pal <- colorNumeric(palette = "RdYlBu",domain = locations_can71$year)
+    pal2 <- colorQuantile("Greens", values(BBWA_can71_2020$mean),
+                          na.color = "transparent")
+    pal3 <- colorQuantile("Blues", values(BBWA_can71_2020$cv),
+                          na.color = "transparent")
+    pal4 <- colorNumeric("Reds", values(BBWA_can71_2020$extrapolation),
+                          na.color = "transparent")
+
+  # Leaflet map
+   training_data_map <- leaflet() %>%
+    
+  # Setting view Canada
+   setView(lng = -82, lat = 50, zoom = 4)%>%
+     
+  # Adding background map
+    addProviderTiles(
+    "Esri.WorldImagery",'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}')%>%
+ 
+  # Adding BCR map
+    addPolygons(data=bcr_boundary_wgs84,
+                weight=1,
+                fillColor = '0',
+                color = "white",
+                label=bcr_boundary_wgs84$subUnit,
+                 group= "Regions"
+                )%>%
+  # Adding species data
+    addCircleMarkers(data=terra::project(locations_can71, "epsg:4326"),
+                     fillColor = ~pal(locations_can71$year),
+                     weight = 0.5,
+                     radius = 2, 
+                     color = ~pal(locations_can71$year),
+                     group="Species_data")%>%
+     
+  # Adding legend species data
+    addLegend('bottomright', pal = pal, values = locations_can71$year,
+            title = "Year", opacity = 1, group="Species_data")%>%
+     
+  # Adding raster PREDICTIONS
+    addRasterImage(terra::project(BBWA_can71_2020$mean, "epsg:4326"),
+                   colors=pal2,opacity=0.8,
+                   group="Predictions")%>%
+    
+     addLegend(pal = pal2,
+               values = values(terra::project(BBWA_can71_2020$mean, "epsg:4326")),
+               title = "Predictions (Mean-quantiles)",
+               position = "bottomright",
+               group = "Predictions")%>%
+     
+
+  # Adding raster UNCERTAINTY
+    addRasterImage(terra::project(BBWA_can71_2020$cv, "epsg:4326"),
+                   colors=pal3, opacity=0.8, group="Uncertainty")%>%
+    
+    addLegend(pal = pal3, values = values(BBWA_can71_2020$cv),
+               title = "Uncertainty(CV-Quantiles)",
+               position = "bottomright",
+               layerId = "Uncertainty",
+              group = "Uncertainty")%>%
+     
+ # Adding raster EXTRAPOLATION
+     addRasterImage(terra::project(BBWA_can71_2020$extrapolation, "epsg:4326"),
+                    colors=pal4,opacity=0.8, group="Extrapolation")%>%
+     
+     addLegend(pal = pal4, values = values(BBWA_can71_2020$extrapolation),
+                title = "Extrapolation",
+                position = "bottomright",
+                layerId = "Extrapolation",
+               group = "Extrapolation")%>%
+  
+
+   # add measurement tool
+    addMeasure(primaryLengthUnit = "kilometers",
+               secondaryLengthUnit = 'miles',
+               primaryAreaUnit = "hectares",
+               secondaryAreaUnit="acres",
+               position = 'topleft')%>%
+  
+ # Adding layer control
+    addLayersControl(options = layersControlOptions(collapsed = T),
+                       position ="topleft",
+                       overlayGroups = c( "Regions",
+                                          "Species_data",
+                                          "Predictions",
+                                          "Uncertainty",
+                                          "Extrapolation"))%>%
+                       hideGroup(c("Predictions", "Uncertainty", "Extrapolation"))
+                     
+
+
 ```
 
-```{r echo=FALSE, warning=FALSE, message=FALSE}
-
-ggplot(bcr_boundary[bcr_boundary$subUnit==81])+
-  geom_spatraster(data=BBWA_can81_2020$cv)+
-   geom_spatvector(fill = NA)+
-   theme_minimal() +
-   scale_fill_whitebox_c(
-    palette = "muted",
-    n.breaks = 5
-  )+
-   labs(
-    fill = "Coefficient \nof variation",
-    title = "Spatial uncertainty",
-    subtitle = "BBWA-Bay-breasted Warbler, BCR-81"
-  )
+```{r}
+  training_data_map
 ```
-:::
