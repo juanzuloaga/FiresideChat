@@ -60,7 +60,7 @@ dplyr::filter(can81 == "TRUE")
 bird_d <- as.data.frame(as.matrix(bird))
 names(bird_d)[1] <- "id"
 
-# Merging bcrlist_sel and bird_d by id
+# Merging bcrlist_sel and bird_d by id, indicate if species was detected or not
 birds_merged_can71 <- merge(bcrlist_can71, bird_d, by="id")%>%
    subset(select = c("id",  "BBWA")) |> 
     mutate(BBWA=as.numeric(BBWA),
@@ -74,7 +74,7 @@ birds_merged_can81 <- merge(bcrlist_can81, bird_d, by="id")%>%
   rename(count = BBWA)
 
 # TASK 2. TEMPORAL DISTRIBUTION OF DETECTIONS
-# selecting the DATE
+# adding the DATE, TIME, and COORDS
 visit_detections_can71 <- merge(bcrlist_can71, visit, by="id")%>%
   inner_join(birds_merged_can71) |> 
    subset(select = c("id", "tssr", "jday", "count", "detection", "lat", "lon")) |> 
@@ -205,8 +205,9 @@ locations_can71 <- st_as_sf(visit_detections_can71, coords=c("lon", "lat"), crs=
   terra::vect() |> 
   terra::project(crs(bcr_boundary))
 
-#locations_can81 <- terra::mask(locations, bcr_boundary[bcr_boundary$subUnit==81])%>%
- # terra::crop(bcr_boundary[bcr_boundary$subUnit==81])
+locations_can81 <- st_as_sf(visit_detections_can81, coords=c("lon", "lat"), crs=4326) |> 
+  terra::vect() |> 
+  terra::project(crs(bcr_boundary))
 
 
 ```
@@ -366,7 +367,7 @@ This map below shows the (EXTRAPOLTAION layer)..................
 #  SPECIES DATA
 
   # Pallete
-    pal <- colorNumeric(palette = "RdYlBu",domain = locations_can71$year)
+    pal <- colorNumeric(palette = "viridis",domain = locations_can71$count)
     pal2 <- colorQuantile("Greens", values(BBWA_can71_2020$mean),
                           na.color = "transparent")
     pal3 <- colorQuantile("Blues", values(BBWA_can71_2020$cv),
