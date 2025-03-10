@@ -72,12 +72,12 @@ birds_merged_can81 <- merge(bcrlist_can81, bird_d, by="id")%>%
 # TASK 2. TEMPORAL DISTRIBUTION OF DETECTIONS
 # selecting the DATE
 visit_detections_can71 <- merge(bcrlist_can71, visit, by="id")%>%
-   subset(select = c("id", "date"))%>%
-  dplyr::mutate(ordinal_day = lubridate::yday(date))
+   subset(select = c("id", "tssr", "jday")) |> 
+  rename(ordinal_day = jday, time_since_sunrise = tssr)
 
 visit_detections_can81 <- merge(bcrlist_can81, visit, by="id")%>%
-   subset(select = c("id", "date"))%>%
-  dplyr::mutate(ordinal_day = lubridate::yday(date))
+   subset(select = c("id", "tssr", "jday")) |> 
+  rename(ordinal_day = jday, time_since_sunrise = tssr)
 
 ```
 
