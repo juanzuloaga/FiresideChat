@@ -62,10 +62,12 @@ names(bird_d)[1] <- "id"
 
 # Merging bcrlist_sel and bird_d by id
 birds_merged_can71 <- merge(bcrlist_can71, bird_d, by="id")%>%
-   subset(select = c("id",  "BBWA"))
+   subset(select = c("id",  "BBWA")) |> 
+  dplyr::filter(BBWA > 0)
   
 birds_merged_can81 <- merge(bcrlist_can81, bird_d, by="id")%>%
-   subset(select = c("id", "BBWA"))
+   subset(select = c("id", "BBWA")) |> 
+  dplyr::filter(BBWA > 0)
 
 # TASK 2. TEMPORAL DISTRIBUTION OF DETECTIONS
 # selecting the DATE
