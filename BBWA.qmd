@@ -446,6 +446,8 @@ This map below shows the (EXTRAPOLTAION layer)..................
 
 ```
 
+Use this icon ![](Figures/icon_layers.png){width="50"} in the map below to select and visualize raster and vector layers.
+
 ```{r}
   training_data_map
 ```
