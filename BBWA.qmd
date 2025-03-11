@@ -12,7 +12,7 @@ editor: visual
 css: styles.css
 ---
 
-Welcome to bird model evaluation! Below are the model product inputs and outputs for evaluation, spread across six numbered categories. Within, each category there will be several numbered tasks. Note that some categories are in-progress. Please use this google form [BBWA-BCR-71](https://docs.google.com/forms/d/1xhekH7fj2461LX_AAbN8Md1mLibKmaGo4mF_FexQm3M/edit) to provide your feedback on each section of the model cycle.
+Welcome to bird model evaluation! Below are the model product inputs and outputs for evaluation, divided across seven categories. Within, each category there will be several tasks. Note that some categories are in-progress. Please use this Google form [BBWA-BCR-71](https://docs.google.com/forms/d/1xhekH7fj2461LX_AAbN8Md1mLibKmaGo4mF_FexQm3M/edit) to provide your feedback on each section of the model cycle.
 
 ```{r echo=F, message=F, warning=FALSE}
 # Setting working directory
@@ -302,7 +302,7 @@ BBWA_can81_2020 <- terra::rast("./data/BBWA/BBWA_can81_2020.tiff")
     ```
     :::
 
-    ```{r}
+    ```{r echo=FALSE}
     cov_table
     ```
 
@@ -393,24 +393,23 @@ BBWA_can81_2020 <- terra::rast("./data/BBWA/BBWA_can81_2020.tiff")
 
     **Task:**
 
-    Please identify any areas that are surprising for you.
+    Please identify any areas that where you are surprised the predictions are or are not extrapolated.
 
     **Description:**
 
-    Extrapolation represents ......and was calculated ....
-
-    This map below shows the (EXTRAPOLTAION layer)..................
+    Select "Extrapolation" on the map below. It shows the proportion of bootstraps where the values for at least 1 variable in the model were outside the values in the model, and therefore may not represent the actual relationship between bird density and that variable.
     :::
     :::
 
-## MAPS
+## MAP
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 
 #  SPECIES DATA
 
   # Pallete
-    pal <- colorNumeric(palette = "viridis",domain = locations_can71$count)
+    pal <- colorNumeric(palette = "viridis",domain = locations_can71$count,
+                        na.color = "transparent")
     pal2 <- colorQuantile("Greens", values(BBWA_can71_2020$mean),
                           na.color = "transparent")
     pal3 <- colorQuantile("Blues", values(BBWA_can71_2020$cv),
@@ -502,6 +501,6 @@ BBWA_can81_2020 <- terra::rast("./data/BBWA/BBWA_can81_2020.tiff")
 
 ```
 
-```{r}
+```{r echo=FALSE}
   training_data_map
 ```
