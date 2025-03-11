@@ -9,7 +9,7 @@ editor: visual
 css: styles.css
 ---
 
-## FiresideChat
+## Fireside Chat
 
 Dear Evaluator, we would your feedback on Species Distribution Models (SDMs) inputs and outputs for several species (see list below) in two ecoregions in Canada (see map below).
 
@@ -17,7 +17,7 @@ This exercise and your valuable feedback will help in two ways: 1) modelers will
 
 ## Species for Evaluation
 
-Select the SPECIES and REGION (see list below) you want to provide feedback!
+Select the SPECIES and REGION (see list below) you want to provide feedback for!
 
 Notice there are two separate files for each species, corresponding to two regions for evaluation.
 
@@ -44,10 +44,6 @@ Notice there are two separate files for each species, corresponding to two regio
 BCRs 71 and 81
 
 ![](data/BCRupdatesBAM.png)
-
-## Model context
-
-Elly.......I think we need to provide a short overview on why these models were built? context? (forestry, ??) how? what kind of data sets were used?, etc..
 
 ## Tool context
 
