@@ -30,7 +30,7 @@ Notice there are two separate files for each species, corresponding to two regio
 | LEYE         | *Lesser Yellowlegs*       | BCR-71                      |
 | OSFL         | *Olive-sided Flycatcher*  | BCR-71, BCR-81              |
 | TEWA         | *Tennessee Warbler*       | BCR-71, BCR-81              |
-| BLPL         | *Blackpoll Warbler*       |                             |
+| BLPW         | *Blackpoll Warbler*       |                             |
 
 ## Study regions
 
