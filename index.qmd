@@ -21,23 +21,16 @@ Select the SPECIES and REGION (see list below) you want to provide feedback for!
 
 Notice there are two separate files for each species, corresponding to two regions for evaluation.
 
-| Species code | Species name                     | Region              |
-|--------------|----------------------------------|---------------------|
-| ATTW         | *American Three-toed Woodpecker* |                     |
-| BBWA         | *Bay-breasted Warbler*           | [BCR-71](BBWA.html) |
-|              |                                  | BCR-81              |
-| BBWO         | *Black-backed Woodpecker*        |                     |
-| CMWA         | *Cape May Warbler*               |                     |
-| CONW         | *Connecticut Warbler*            |                     |
-| LEYE         | *Lesser Yellowlegs*              |                     |
-| OSFL         | *Olive-sided Flycatcher*         |                     |
-| SOSA         | *Solitary Sandpiper*             |                     |
-| TEWA         | *Tennessee Warbler*              |                     |
-| CONI         | *Common Nighthawk*               |                     |
-| EWPW         | *Eastern Whip-poor-will*         |                     |
-| LESA         | *Least Sandpiper*                |                     |
-| SBDO         | *Short-billed Dowitcher*         |                     |
-| BLPL         |                                  |                     |
+| Species code | Species name              | Region                      |
+|--------------|---------------------------|-----------------------------|
+| BBWA         | *Bay-breasted Warbler*    | [BCR-71](BBWA.html), BCR-81 |
+| BBWO         | *Black-backed Woodpecker* |                             |
+| CMWA         | *Cape May Warbler*        | BCR-71, BCR-81              |
+| CONW         | *Connecticut Warbler*     | BCR-71, BCR-81              |
+| LEYE         | *Lesser Yellowlegs*       | BCR-71                      |
+| OSFL         | *Olive-sided Flycatcher*  | BCR-71, BCR-81              |
+| TEWA         | *Tennessee Warbler*       | BCR-71, BCR-81              |
+| BLPL         | *Blackpoll Warbler*       |                             |
 
 ## Study regions
 
