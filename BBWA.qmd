@@ -12,11 +12,17 @@ editor: visual
 css: styles.css
 ---
 
-Use THIS FORM [BBWA-BCR-71](https://docs.google.com/forms/d/1xhekH7fj2461LX_AAbN8Md1mLibKmaGo4mF_FexQm3M/edit) to provide your feedback on each section of the model cycle.
+**Welcome to bird model evaluation!**
+
+Below are the model product inputs and outputs for evaluation, divided across six categories. Within, each category there will be several tasks. Note that some categories are in-progress. Please use this Google form [MODEL EVALUATION FROM](https://docs.google.com/forms/d/1xhekH7fj2461LX_AAbN8Md1mLibKmaGo4mF_FexQm3M/edit) to provide your feedback on each section of the model cycle.
+
+**Model rationale**
+
+The BAM V5 models were produced for the purpose of modelling the distribution and abundance of breeding birds in the boreal forest. The primary purposes of the models are to accurately map the distribution of bird density on the landscape and sum those predictions to estimate population size.
 
 ```{r echo=F, message=F, warning=FALSE}
 # Setting working directory
-setwd("C:/FiresideChat")
+#setwd("C:/FiresideChat")
 # Libraries
 library(dplyr)
 library(reshape2)
@@ -38,6 +44,7 @@ library(shiny)
 library(widgetframe)
 library(leafem)
 library(tidyverse)
+library(htmltools)
 
 # Setting working directory
 setwd("C:/FiresideChat/")
@@ -60,22 +67,36 @@ dplyr::filter(can81 == "TRUE")
 bird_d <- as.data.frame(as.matrix(bird))
 names(bird_d)[1] <- "id"
 
-# Merging bcrlist_sel and bird_d by id
+# Merging bcrlist_sel and bird_d by id, indicate if species was detected or not
 birds_merged_can71 <- merge(bcrlist_can71, bird_d, by="id")%>%
-   subset(select = c("id",  "BBWA"))
+   subset(select = c("id",  "BBWA")) |> 
+    mutate(BBWA=ifelse(BBWA=="0", NA, as.integer(BBWA)),
+           detection = ifelse(is.na(BBWA), 0, 1)) |> 
+  rename(count = BBWA)
   
 birds_merged_can81 <- merge(bcrlist_can81, bird_d, by="id")%>%
-   subset(select = c("id", "BBWA"))
+   subset(select = c("id", "BBWA")) |> 
+    mutate(BBWA=ifelse(BBWA=="0", NA, as.integer(BBWA)),
+           detection = ifelse(is.na(BBWA), 0, 1)) |> 
+  rename(count = BBWA)
 
 # TASK 2. TEMPORAL DISTRIBUTION OF DETECTIONS
-# selecting the DATE
+# adding the DATE, TIME, and COORDS
 visit_detections_can71 <- merge(bcrlist_can71, visit, by="id")%>%
-   subset(select = c("id", "date"))%>%
-  dplyr::mutate(ordinal_day = lubridate::yday(date))
+  inner_join(birds_merged_can71) |> 
+   subset(select = c("id", "tssr", "jday", "count", "detection", "lat", "lon")) |> 
+  pivot_longer(c(jday, tssr), names_to="metric", values_to="value") |> 
+  mutate(metric = factor(metric, levels = c("tssr", "jday"),
+                            labels = c("Time since sunrise", "Ordinal day")),
+         detection = factor(detection, levels=c(0, 1), labels = c("Undetected", "Detected")))
 
 visit_detections_can81 <- merge(bcrlist_can81, visit, by="id")%>%
-   subset(select = c("id", "date"))%>%
-  dplyr::mutate(ordinal_day = lubridate::yday(date))
+    inner_join(birds_merged_can71) |> 
+   subset(select = c("id", "tssr", "jday", "count", "detection", "lat", "lon")) |> 
+  pivot_longer(c(jday, tssr), names_to="metric", values_to="value") |> 
+  mutate(metric = factor(metric, levels = c("tssr", "jday"),
+                            labels = c("Time since sunrise", "Ordinal day")),
+         detection = factor(detection, levels=c(0, 1), labels = c("Undetected", "Detected")))
 
 ```
 
@@ -95,7 +116,7 @@ BBWA_can81_2020 <- terra::rast("./data/BBWA/BBWA_can81_2020.tiff")
 ```
 
 ::: panel-tabset
-## 1. SPECIES
+## 1.SPECIES INPUT DATA
 
 ::: {.callout-note collapse="true"}
 ## a. Histogram of counts
@@ -105,7 +126,7 @@ BBWA_can81_2020 <- terra::rast("./data/BBWA/BBWA_can81_2020.tiff")
 
 **Task:**
 
-We would like to know if there are outliers and/or a truncation value that modelers might be aware of.
+Please identify any potential outliers and/or a truncation value that modelers should be aware of.
 
 </div>
 
@@ -113,18 +134,18 @@ We would like to know if there are outliers and/or a truncation value that model
 
 **Description:**
 
-This is an histogram of raw count from data sets included in the model.
+This is a histogram of raw counts included in the model.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
-# Histogram
+  # Histogram
 
-ggplot(birds_merged_can71, aes(x=id))+
-  geom_histogram()+
-  labs(x="id", y = "Counts (males per hectare")+
-  theme(axis.text=element_text(size=14))+
-  theme(axis.title = element_text(size = 16))
- 
+  ggplot(dplyr::filter(birds_merged_can71, count > 0), aes(x=count))+
+    geom_histogram()+
+    labs(x="Count of birds observed", y = "Number of surveys with detections")+
+    theme(axis.text=element_text(size=14))+
+    theme(axis.title = element_text(size = 18))
+   
 ```
 
 </div>
@@ -132,14 +153,14 @@ ggplot(birds_merged_can71, aes(x=id))+
 :::
 
 ::: {.callout-note collapse="true"}
-## b. Temporal distribution of detections (time relative to sunrise, ordinal day)
+## b. Temporal distribution of detections
 
 ::: {style="display: flex;"}
 <div>
 
 **Task:**
 
-We would like to know if there are outliers and/or a truncation value that modelers might be aware of.
+Please identify any potential outliers and/or a truncation value that modelers should be aware of.
 
 </div>
 
@@ -147,19 +168,21 @@ We would like to know if there are outliers and/or a truncation value that model
 
 **Description:**
 
-This is the temporal distribution of detections.
+This is the temporal distribution of detections and nondetections by time since sunrise and ordinal day of year.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-# Histogram
+    # Histogram
 
-ggplot(visit_detections_can71, aes(x=ordinal_day))+
-  geom_histogram()+
-  labs(x="Ordinal day", y = "Counts")+
-  theme(axis.text=element_text(size=14))+
-  theme(axis.title = element_text(size = 16))
+    ggplot(visit_detections_can71, aes(x=value))+
+      geom_histogram()+
+      labs(x="", y = "Number of surveys")+
+      facet_grid(detection~metric, scales="free") +
+      theme(axis.text=element_text(size=14))+
+      theme(axis.title = element_text(size = 18))+
+  theme(strip.text.x = element_text(size = 15))+
+  theme(strip.text.y = element_text(size = 15))
+  
 
-
- 
 ```
 
 </div>
@@ -167,14 +190,16 @@ ggplot(visit_detections_can71, aes(x=ordinal_day))+
 :::
 
 ::: {.callout-note collapse="true"}
-## c. Training data
+## c. Map of observations
 
 ::: {style="display: flex;"}
 <div>
 
 **Task:**
 
-Please identify misidentifications, migratory individuals, or surprises
+Select "Observations" on the map below.
+
+Please identify any observations that might be misidentifications, migratory individuals, or surprises.
 
 </div>
 
@@ -182,129 +207,194 @@ Please identify misidentifications, migratory individuals, or surprises
 
 **Description:**
 
-Please use the map below to visualize species data
+Please use the map below to visualize observations of the focal species.
 
 ```{r echo=FALSE}
 
-locations <- st_as_sf(visit, coords =  c("lon", "lat"), crs=4326)%>%
-  terra::vect()%>%
-  terra::project(crs(bcr_boundary))
+    locations_can71 <- st_as_sf(visit_detections_can71, coords=c("lon", "lat"), crs=4326) |> 
+      terra::vect() |> 
+      terra::project(crs(bcr_boundary))
 
-locations_can71 <- terra::mask(locations, bcr_boundary[bcr_boundary$subUnit==71])%>%
-  terra::crop(bcr_boundary[bcr_boundary$subUnit==71])
-
-#locations_can81 <- terra::mask(locations, bcr_boundary[bcr_boundary$subUnit==81])%>%
- # terra::crop(bcr_boundary[bcr_boundary$subUnit==81])
+locations_can71_detected <- locations_can71[!is.na(locations_can71$count), ]
+locations_can71_Undetected <- locations_can71[is.na(locations_can71$count), ]
 
 
+    locations_can81 <- st_as_sf(visit_detections_can81, coords=c("lon", "lat"), crs=4326) |> 
+      terra::vect() |> 
+      terra::project(crs(bcr_boundary))
 ```
 
 </div>
 :::
 :::
 
-## 2. COVARIATES
+## 2.COVARIATES
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-#covlist <- read.csv("./data/covlist.csv")
-#covlist_sel <- read.csv("./covlist_sel.csv")
+    
+  # LIST OF COVARIABLES
 
-covlist_sel <- dplyr::filter(covlist, bcr %in% c("can71", "can81"))%>%
-  dplyr::select(where(~ last(.x) != "FALSE"))%>%
-  reshape2::melt(id.vars =  "bcr")
- names(covlist_sel)[2] <- "Covariate.label"
+    covlist_sel <- dplyr::filter(covlist, bcr %in% c("can71", "can81"))%>%
+      dplyr::select(where(~ last(.x) != "FALSE"))%>%
+      reshape2::melt(id.vars =  "bcr")
+     names(covlist_sel)[2] <- "Covariate.label"
 
-cov_label <- read.xlsx("./data/covariates_label_insert.xlsx")
+    cov_label <- read.xlsx("./data/covariates_label_insert.xlsx")
 
-merge_cov <- merge(covlist_sel, cov_label, by="Covariate.label")
-cov_bcr71 <- filter(merge_cov, bcr == "can71")%>%
-  dplyr::select(Covariate.label, Category, Description)
-cov_bcr81 <- filter(merge_cov, bcr == "can81")
+    merge_cov <- merge(covlist_sel, cov_label, by="Covariate.label")
+    
+  # Filter list using BCR
+    cov_bcr71 <- filter(merge_cov, bcr == "can71")%>%
+      dplyr::select(Covariate.label, Category, Description)
 
+    colnames(cov_bcr71)[1] <- "var"
+
+  # COVARIAES IMPORTANCE
+      list_bootstraps <- list.files("./data/BBWA/covariates_bootstrps/can_71",
+                                 pattern=".R",
+                                 full.names = T)
+
+    df_bootstrap <- do.call(rbind,
+                   lapply(list_bootstraps, function(x) {
+                     
+                     load(file = x)
+                     gbm::summary.gbm(b.i, plotit = F)
+                   }))
+
+    df_bootstrap_mean <- dplyr::summarise(df_bootstrap, .by=var, mean=mean(rel.inf))
+
+    df_bootstrap_sd <- dplyr::summarise(df_bootstrap, .by=var, sd=sd(rel.inf))
+
+    n = length(df_bootstrap$rel.inf)
+
+    df_bootstrap_sd$se <- df_bootstrap_sd$sd / sqrt(n)
+
+    df_bootstrap_merge <- merge(df_bootstrap_mean, df_bootstrap_sd, by="var")
+
+    
+    
+    # MERGE LIST AND IMPORTANCE
+    cov_bcr71_merge <- merge(cov_bcr71, df_bootstrap_merge, by="var")%>%
+     dplyr::select(var, mean, Category, Description)%>%
+      mutate_at(vars(mean), list(~ round(., 1)))
+    colnames(cov_bcr71_merge)[1] <- "Covariate"
+    colnames(cov_bcr71_merge)[2] <- "Relative importance"
+
+    
 ```
 
 ::: {.callout-note collapse="true"}
-## a. Covariates relative importance
+## a. Covariates list and description
 
-**Task:** Please re-rank covariates and/or suggest expected relative importance and/or percentage (%).
+**Task:**
 
-**Description:** Covariates relative importance (mean 10 bootstraps)
+Please suggest adding/removing covariates from the list.
+
+**Description:**
+
+Metadata and preparation for covariates used in model fitting.
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
-
-list_bootstraps <- list.files("./data/BBWA/covariates_bootstrps/can_71",
-                             pattern=".R",
-                             full.names = T)
-
-df_bootstrap <- do.call(rbind,
-               lapply(list_bootstraps, function(x) {
-                 
-                 load(file = x)
-                 gbm::summary.gbm(b.i, plotit = F)
-               }))
-
-df_bootstrap_mean <- dplyr::summarise(df_bootstrap, .by=var, mean=mean(rel.inf))
-
-df_bootstrap_sd <- dplyr::summarise(df_bootstrap, .by=var, sd=sd(rel.inf))
-
-n = length(df_bootstrap$rel.inf)
-
-df_bootstrap_sd$se <- df_bootstrap_sd$sd / sqrt(n)
-
-df_bootstrap_merge <- merge(df_bootstrap_mean, df_bootstrap_sd, by="var")
-
-```
-
-```{r echo=FALSE, fig.height=6}
-
-ggplot(data=df_bootstrap_merge, aes(x=reorder(var, mean), y=mean, fill=mean))+
-           geom_bar(stat = "identity", fill="gray") + 
-   labs(title = "Covariates relative importance",
-        x = "Covariates", y = "%")+
-  coord_flip()+
-    theme(legend.position = "none")+
-  geom_errorbar(
-    aes(ymin = mean - se, ymax = mean + se), 
-    position = position_dodge2(padding = 0.5))
+cov_table <- htmltools::tagList(DT::datatable(cov_bcr71_merge,
+                                              filter='top',
+                                              rownames = F,
+                                              escape = F),
+                                options = list(pageLength = 3,
+                                               autoWidth = TRUE)
+                                )
 ```
 :::
 
-::: {.callout-note collapse="true"}
-## b. Covariates list and description
-
-**Task:** Task: Please suggest adding/removing covariates from the list.
-
-**Description:** List of covariates used in model fitting
-
-```{r echo=FALSE}
-
-
-cov_table <- htmltools::tagList(DT::datatable(cov_bcr71, filter='top',  rownames = F, escape = F), options = list(
-  pageLength = 5, autoWidth = TRUE
-))
-
-
-
-```
-:::
-
-```{r}
+```{r }
 cov_table
 ```
 
-## 3. DATA PREPARATION
+::: {.callout-note collapse="true"}
+## b. Covariate relative importance
 
-3.1. Species
+**Task:**
 
-3.2. Covariates
+Please re-rank covariates and/or suggest expected % relative importance.
 
-Coming soon!
+**Description:**
 
-## 4. MODEL FITTING
+Mean relative importance across 10 bootstraps; error bars represent standard error. Definitions for covariate names can be found in task 2a above.
 
-Coming soon!
+```{r echo=FALSE, fig.height=6}
 
-## 5. PREDICTIONS
+    ggplot(data=df_bootstrap_merge, aes(x=reorder(var, mean), y=mean, fill=mean))+
+               geom_bar(stat = "identity", fill="gray") + 
+       labs(title = "Covariates relative importance",
+            x = "Covariates", y = "%")+
+      coord_flip()+
+        theme(legend.position = "none")+
+      geom_errorbar(
+        aes(ymin = mean - se, ymax = mean + se), 
+        position = position_dodge2(padding = 0.5))
+```
+:::
+
+## 3.DATA PREPARATION
+
+::: {.callout-note collapse="true"}
+## a. Sampling data
+
+**Task:**
+
+Please identify any sampling data preparation steps that might violate assumptions and suggest alternatives.
+
+**Description:**
+
+The following treatments were applied to the survey data
+
+-   Survey data were spatially thinned using a hexagonal grid with cells of 2.5 km spacing to ensure independence of samples. One survey per grid per year was used for each separate model run.
+
+-   Survey data were assigned to bird conservation region (BCR) for each modelling unit using all surveys within the BCR and a 100 km buffer around the BCR.
+:::
+
+::: {.callout-note collapse="true"}
+## b. Covariate data
+
+**Task:**
+
+Please identify any covariate data preparation steps that might violate assumptions and suggest alternatives.
+
+**Description:**
+
+The following preparations were made to the covariate data:
+
+-   Local covariates were extracted with a 200m buffer radius. Landscape covariates were extracted with a 2 km buffer radius.
+
+-   Covariates were thinned for each BCR using stepwise variance inflation factor (VIF) with a threshold of 10 to reduce covariance, which typically results in no two-way correlation greater than 0.7.
+
+-   Additional preparations are listed in the table in task 2a.
+:::
+
+## 4.MODEL FITTING
+
+::: {.callout-note collapse="true"}
+## a. Model process
+
+**Task:**
+
+Please identify any modelling choices that might violate assumptions and suggest alternatives.
+
+**Description:**
+
+Separate models were fit for each combination of species and BCR. All models were fit with boosted regression trees that could accommodate up to 3-way interactions between variables. The modelling process consisted with the following steps:
+
+1.  Tuning: models were fit with decreasing learning rates until a reasonable number of trees was found (between 1,000 and 10,000). Covariates with less than 0.1% variable importance were removed.
+
+2.  Bootstrapping: ten models with different selections of spatial thinning were fit using the learning rate and number of trees defined in step 1.
+
+3.  Predicting: predictions were made using covariate values for every 5 years from 1985 to 2020 from the bootstrapped models to 1km resolution.
+
+4.  Validating: values were extracted for withheld data from the prediction surfaces of the closest year and model performance was evaluated for various parameters
+
+5.  Range limiting: predictions outside of probable range based on eBird detections were masked out.
+:::
+
+## 5.PREDICTIONS
 
 ::: {.callout-note collapse="true"}
 ## a. Mean density map
@@ -315,21 +405,21 @@ Please identify areas that are too high or too low density, if any.
 
 **Description:**
 
-This map below shows estimates predicitons (PREDICTION layer) of the number of males per hectare ???????
+Select "Prediction" on the map below. It shows the mean estimates of the number of male birds per hectare across 10 bootstraps.
 :::
 
-## 6. UNCERTAINTY
+## 6.UNCERTAINTY
 
 ::: {.callout-note collapse="true"}
 ## a. Coefficient of variation
 
 **Task:**
 
-Please identify any areas that are surprising for you.
+Please identify areas that have surprisingly high or low uncertainty, if any.
 
 **Description:**
 
-Use the map below to visualize the UNCERTAINTY layer (i.e., the coefficient of variation 'CV' of 10 models). Areas with low Uncertainty will display high CV values.
+Select "Uncertainty" on the map below. It shows the coefficient of variation of the number of male birds per hectare across 10 bootstraps.
 :::
 
 ::: {.callout-note collapse="true"}
@@ -337,28 +427,28 @@ Use the map below to visualize the UNCERTAINTY layer (i.e., the coefficient of v
 
 **Task:**
 
-Please identify any areas that are surprising for you.
+Please identify any areas that where you are surprised the predictions are or are not extrapolated.
 
 **Description:**
 
-Extrapolation represents ......and was calculated ....
-
-This map below shows the (EXTRAPOLTAION layer)..................
+Select "Extrapolation" on the map below. It shows the proportion of bootstraps where the values for at least 1 variable in the model were outside the values in the model, and therefore may not represent the actual relationship between bird density and that variable.
 :::
 :::
 
-## MAPS
+## MAP
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 
 #  SPECIES DATA
 
   # Pallete
-    pal <- colorNumeric(palette = "RdYlBu",domain = locations_can71$year)
-    pal2 <- colorQuantile("Greens", values(BBWA_can71_2020$mean),
+    pal <- colorFactor("viridis",locations_can71_detected$count,
                           na.color = "transparent")
-    pal3 <- colorQuantile("Blues", values(BBWA_can71_2020$cv),
-                          na.color = "transparent")
+  
+    pal2 <- colorNumeric("inferno", values(BBWA_can71_2020$mean), 
+                          na.color = "transparent", reverse = T)
+    pal3 <- colorQuantile("plasma", values(BBWA_can71_2020$cv),
+                          na.color = "transparent", reverse = T)
     pal4 <- colorNumeric("Reds", values(BBWA_can71_2020$extrapolation),
                           na.color = "transparent")
 
@@ -377,33 +467,52 @@ This map below shows the (EXTRAPOLTAION layer)..................
                 weight=1,
                 fillColor = '0',
                 color = "white",
-                label=bcr_boundary_wgs84$subUnit,
+                label= paste0("BCR_", bcr_boundary_wgs84$subUnit),
+              #  popup = bcr_boundary_wgs84$subUnit,
                  group= "Regions"
                 )%>%
-  # Adding species data
-    addCircleMarkers(data=terra::project(locations_can71, "epsg:4326"),
-                     fillColor = ~pal(locations_can71$year),
+  # Adding species data DETECTED
+    addCircleMarkers(data=terra::project(locations_can71_detected, "epsg:4326"),
+                     fillColor = ~pal(locations_can71_detected$count),
+                     weight = 0.9,
+                     fillOpacity = 1,
+                     radius = 3,
+                     color = ~pal(locations_can71_detected$count),
+                     label = ~htmlEscape(locations_can71_detected$count),
+                     group="Observations_Detected")%>%
+     
+     
+     
+      # Adding legend species data detected
+         addLegend('bottomright', pal = pal, values = locations_can71_detected$count,
+                 title = "Count", opacity = 1, group="Observations_Detected")%>%
+      
+     
+  # Adding species data UNDETECTED
+    addCircleMarkers(data=terra::project(locations_can71_Undetected, "epsg:4326"),
+                     fillColor = "gray",
                      weight = 0.5,
-                     radius = 2, 
-                     color = ~pal(locations_can71$year),
-                     group="Species_data")%>%
+                     radius = 3,
+                     color = "gray",
+                     group="Observations_Undetected")%>%
      
-  # Adding legend species data
-    addLegend('bottomright', pal = pal, values = locations_can71$year,
-            title = "Year", opacity = 1, group="Species_data")%>%
-     
+    
+         
   # Adding raster PREDICTIONS
     addRasterImage(terra::project(BBWA_can71_2020$mean, "epsg:4326"),
-                   colors=pal2,opacity=0.8,
-                   group="Predictions")%>%
-    
+                   colors=pal2,opacity=0.4,
+                   group="Predictions",
+                   layerId = "Predictions")%>%
+     
      addLegend(pal = pal2,
                values = values(terra::project(BBWA_can71_2020$mean, "epsg:4326")),
-               title = "Predictions (Mean-quantiles)",
+               title = "Predictions (Males/Ha)",
                position = "bottomright",
                group = "Predictions")%>%
      
-
+           
+     
+   
   # Adding raster UNCERTAINTY
     addRasterImage(terra::project(BBWA_can71_2020$cv, "epsg:4326"),
                    colors=pal3, opacity=0.8, group="Uncertainty")%>%
@@ -436,11 +545,14 @@ This map below shows the (EXTRAPOLTAION layer)..................
     addLayersControl(options = layersControlOptions(collapsed = T),
                        position ="topleft",
                        overlayGroups = c( "Regions",
-                                          "Species_data",
+                                          "Observations_Detected",
+                                          "Observations_Undetected",
                                           "Predictions",
                                           "Uncertainty",
                                           "Extrapolation"))%>%
-                       hideGroup(c("Predictions", "Uncertainty", "Extrapolation"))
+                       hideGroup(c("Predictions",
+                                   "Uncertainty", "Extrapolation",
+                                   "Observations_Undetected"))
                      
 
 
@@ -449,5 +561,6 @@ This map below shows the (EXTRAPOLTAION layer)..................
 Use this icon ![](Figures/icon_layers.png){width="50"} in the map below to select and visualize raster and vector layers.
 
 ```{r}
+
   training_data_map
 ```

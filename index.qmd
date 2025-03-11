@@ -9,72 +9,33 @@ editor: visual
 css: styles.css
 ---
 
-## FiresideChat
+## Fireside Chat
 
 Dear Evaluator, we would your feedback on Species Distribution Models (SDMs) inputs and outputs for several species (see list below) in two ecoregions in Canada (see map below).
 
 This exercise and your valuable feedback will help in two ways: 1) modelers will use your feedback to improve model predictions, and 2) help us to develop an interactive tool for model evaluation (see tool context below).
 
+Our aim is to develop and interactive and quantitative tool for improving SDMs and evaluating information needs for multiple applications. This tool will foster collaboration among multiple partners and users form model improvement and decision making.
+
 ## Species for Evaluation
 
-Select the SPECIES and REGION (see list below) you want to provide feedback!
+Select the SPECIES and REGION (see list below) you want to provide feedback for!
 
 Notice there are two separate files for each species, corresponding to two regions for evaluation.
 
-| Species code | Species name                     | Region              |
-|--------------|----------------------------------|---------------------|
-| ATTW         | *American Three-toed Woodpecker* |                     |
-| BBWA         | *Bay-breasted Warbler*           | [BCR-71](BBWA.html) |
-|              |                                  | BCR-81              |
-| BBWO         | *Black-backed Woodpecker*        |                     |
-| CMWA         | *Cape May Warbler*               |                     |
-| CONW         | *Connecticut Warbler*            |                     |
-| LEYE         | *Lesser Yellowlegs*              |                     |
-| OSFL         | *Olive-sided Flycatcher*         |                     |
-| SOSA         | *Solitary Sandpiper*             |                     |
-| TEWA         | *Tennessee Warbler*              |                     |
-| CONI         | *Common Nighthawk*               |                     |
-| EWPW         | *Eastern Whip-poor-will*         |                     |
-| LESA         | *Least Sandpiper*                |                     |
-| SBDO         | *Short-billed Dowitcher*         |                     |
-| BLPL         |                                  |                     |
+| Species code | Species name              | Region                      |
+|--------------|---------------------------|-----------------------------|
+| BBWA         | *Bay-breasted Warbler*    | [BCR-71](BBWA.html), BCR-81 |
+| BBWO         | *Black-backed Woodpecker* |                             |
+| CMWA         | *Cape May Warbler*        | BCR-71, BCR-81              |
+| CONW         | *Connecticut Warbler*     | BCR-71, BCR-81              |
+| LEYE         | *Lesser Yellowlegs*       | BCR-71                      |
+| OSFL         | *Olive-sided Flycatcher*  | BCR-71, BCR-81              |
+| TEWA         | *Tennessee Warbler*       | BCR-71, BCR-81              |
+| BLPW         | *Blackpoll Warbler*       |                             |
 
 ## Study regions
 
 BCRs 71 and 81
 
 ![](data/BCRupdatesBAM.png)
-
-## Model context
-
-Elly.......I think we need to provide a short overview on why these models were built? context? (forestry, ??) how? what kind of data sets were used?, etc..
-
-## Tool context
-
-Our aim is to develop and interactive and quantitative tool for improving SDMs and evaluating information needs for multiple applications. This tool will foster collaboration among multiple partners and users form model improvement and decision making (see roles below).
-
-### 1 & 3. Modelers
-
-Modelers design, implement, test and communicate models (in this case Species Distribution Models, SDMs) aimed to predict species potential distribution, habitat suitability, relative density, occupancy, among others.
-
-Modelers can input new models (1) and/or make model adjustments (2) based on EVALUATORS feedback
-
-### 2. Evaluators
-
-Evaluators review part of the entire model and provide feedback to modelers.
-
-Evaluators can revisit models to evaluate improvements made by modelers.
-
-Multiple evaluators are allowed in the process.
-
-Evaluators usually are taxonomic experts that know the biology/ecology and the geographic context of the species. However, other modelers and statisticians can play this role by providing feedback on specific aspect of the models (e.g., algorithms to use, evaluate statistical assumptions).
-
-### 4. Resource managers
-
-Resource managers evaluate information needs for multiple applications.
-
-They provide feedback to modelers.
-
-They use these models to inform planning , management, and policy.
-
-![](Figures/Landing_page.jpg)

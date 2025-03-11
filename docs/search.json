@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "MODEL EVALUATION SYSTEM",
     "section": "",
-    "text": "Dear Evaluator, we would your feedback on Species Distribution Models (SDMs) inputs and outputs for several species (see list below) in two ecoregions in Canada (see map below).\nThis exercise and your valuable feedback will help in two ways: 1) modelers will use your feedback to improve model predictions, and 2) help us to develop an interactive tool for model evaluation (see tool context below)."
+    "text": "Dear Evaluator, we would your feedback on Species Distribution Models (SDMs) inputs and outputs for several species (see list below) in two ecoregions in Canada (see map below).\nThis exercise and your valuable feedback will help in two ways: 1) modelers will use your feedback to improve model predictions, and 2) help us to develop an interactive tool for model evaluation (see tool context below).\nOur aim is to develop and interactive and quantitative tool for improving SDMs and evaluating information needs for multiple applications. This tool will foster collaboration among multiple partners and users form model improvement and decision making."
   },
   {
     "objectID": "index.html#firesidechat",
@@ -46,7 +46,7 @@
     "href": "index.html#species-for-evaluation",
     "title": "MODEL EVALUATION SYSTEM",
     "section": "Species for Evaluation",
-    "text": "Species for Evaluation\nSelect the SPECIES and REGION (see list below) you want to provide feedback!\nNotice there are two separate files for each species, corresponding to two regions for evaluation.\n\n\n\nSpecies code\nSpecies name\nRegion\n\n\n\n\nATTW\nAmerican Three-toed Woodpecker\n\n\n\nBBWA\nBay-breasted Warbler\nBCR-71\n\n\n\n\nBCR-81\n\n\nBBWO\nBlack-backed Woodpecker\n\n\n\nCMWA\nCape May Warbler\n\n\n\nCONW\nConnecticut Warbler\n\n\n\nLEYE\nLesser Yellowlegs\n\n\n\nOSFL\nOlive-sided Flycatcher\n\n\n\nSOSA\nSolitary Sandpiper\n\n\n\nTEWA\nTennessee Warbler\n\n\n\nCONI\nCommon Nighthawk\n\n\n\nEWPW\nEastern Whip-poor-will\n\n\n\nLESA\nLeast Sandpiper\n\n\n\nSBDO\nShort-billed Dowitcher\n\n\n\nBLPL"
+    "text": "Species for Evaluation\nSelect the SPECIES and REGION (see list below) you want to provide feedback for!\nNotice there are two separate files for each species, corresponding to two regions for evaluation.\n\n\n\nSpecies code\nSpecies name\nRegion\n\n\n\n\nBBWA\nBay-breasted Warbler\nBCR-71, BCR-81\n\n\nBBWO\nBlack-backed Woodpecker\n\n\n\nCMWA\nCape May Warbler\nBCR-71, BCR-81\n\n\nCONW\nConnecticut Warbler\nBCR-71, BCR-81\n\n\nLEYE\nLesser Yellowlegs\nBCR-71\n\n\nOSFL\nOlive-sided Flycatcher\nBCR-71, BCR-81\n\n\nTEWA\nTennessee Warbler\nBCR-71, BCR-81\n\n\nBLPW\nBlackpoll Warbler"
   },
   {
     "objectID": "ATTW.html",
@@ -116,7 +116,7 @@
     "href": "BBWA.html",
     "title": "BBWA (Bay-breasted Warbler): Region BCR-71",
     "section": "",
-    "text": "Use THIS FORM BBWA-BCR-71 to provide your feedback on each section of the model cycle."
+    "text": "Welcome to bird model evaluation!\nBelow are the model product inputs and outputs for evaluation, divided across six categories. Within, each category there will be several tasks. Note that some categories are in-progress. Please use this Google form MODEL EVALUATION FROM to provide your feedback on each section of the model cycle.\nModel rationale\nThe BAM V5 models were produced for the purpose of modelling the distribution and abundance of breeding birds in the boreal forest. The primary purposes of the models are to accurately map the distribution of bird density on the landscape and sum those predictions to estimate population size."
   },
   {
     "objectID": "index.html#model-context",
@@ -151,34 +151,83 @@
     "href": "BBWA.html#covariates",
     "title": "BBWA (Bay-breasted Warbler): Region BCR-71",
     "section": "2. COVARIATES",
-    "text": "2. COVARIATES\n\n\n\n\n\n\na. Covariates relative importance\n\n\n\n\n\nTask: Please re-rank covariates and/or suggest expected relative importance and/or percentage (%).\nDescription: Covariates relative importance (mean 10 bootstraps)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nb. Covariates list and description\n\n\n\n\n\nTask: Task: Please suggest adding/removing covariates from the list.\nDescription: List of covariates used in model fitting\n\n\n\n\ncov_table\n\n\n\n\n5\nTRUE"
+    "text": "2. COVARIATES\n\n\n\n\n\n\na. Covariate relative importance\n\n\n\n\n\nTask:\nPlease re-rank covariates and/or suggest expected % relative importance.\nDescription:\nMean relative importance across 10 bootstraps; error bars represent standard error. Definitions for covariate names can be found in task 2a above.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nb. Covariates list and description\n\n\n\n\n\nTask:\nPlease suggest adding/removing covariates from the list.\nDescription:\nMetadata and preparation for covariates used in model fitting.\n\n\n\n\n\n\n\n\n5\nTRUE"
   },
   {
     "objectID": "BBWA.html#data-preparation",
     "href": "BBWA.html#data-preparation",
     "title": "BBWA (Bay-breasted Warbler): Region BCR-71",
     "section": "3. DATA PREPARATION",
-    "text": "3. DATA PREPARATION\n3.1. Species\n3.2. Covariates\nComing soon!"
+    "text": "3. DATA PREPARATION"
   },
   {
     "objectID": "BBWA.html#model-fitting",
     "href": "BBWA.html#model-fitting",
     "title": "BBWA (Bay-breasted Warbler): Region BCR-71",
     "section": "4. MODEL FITTING",
-    "text": "4. MODEL FITTING\nComing soon!"
+    "text": "4. MODEL FITTING"
   },
   {
     "objectID": "BBWA.html#predictions",
     "href": "BBWA.html#predictions",
     "title": "BBWA (Bay-breasted Warbler): Region BCR-71",
     "section": "5. PREDICTIONS",
-    "text": "5. PREDICTIONS\n\n\n\n\n\n\na. Mean density map\n\n\n\n\n\nTask:\nPlease identify areas that are too high or too low density, if any.\nDescription:\nThis map below shows estimates predicitons (PREDICTION layer) of the number of males per hectare ???????"
+    "text": "5. PREDICTIONS\n\n\n\n\n\n\na. Mean density map\n\n\n\n\n\nTask:\nPlease identify areas that are too high or too low density, if any.\nDescription:\nSelect “Prediction” on the map below. It shows the mean estimates of the number of male birds per hectare across 10 bootstraps."
   },
   {
     "objectID": "BBWA.html#uncertainty",
     "href": "BBWA.html#uncertainty",
     "title": "BBWA (Bay-breasted Warbler): Region BCR-71",
     "section": "6. UNCERTAINTY",
-    "text": "6. UNCERTAINTY\n\n\n\n\n\n\na. Coefficient of variation\n\n\n\nTask:\nPlease identify any areas that are surprising for you.\nDescription:\nUse the map below to visualize the UNCERTAINTY layer (i.e., the coefficient of variation ‘CV’ of 10 models). Areas with low Uncertainty will display high CV values.\n\n\n\n\n\n\n\n\n\n\n\n\n\nb. Extrapolation map\n\n\n\nTask:\nPlease identify any areas that are surprising for you.\nDescription:\nExtrapolation represents ……and was calculated ….\nThis map below shows the (EXTRAPOLTAION layer)………………"
+    "text": "6. UNCERTAINTY\n\n\n\n\n\n\na. Coefficient of variation\n\n\n\n\n\nTask:\nPlease identify areas that have surprisingly high or low uncertainty, if any.\nDescription:\nSelect “Uncertainty” on the map below. It shows the coefficient of variation of the number of male birds per hectare across 10 bootstraps.\n\n\n\n\n\n\n\n\n\nb. Extrapolation map\n\n\n\n\n\nTask:\nPlease identify any areas that where you are surprised the predictions are or are not extrapolated.\nDescription:\nSelect “Extrapolation” on the map below. It shows the proportion of bootstraps where the values for at least 1 variable in the model were outside the values in the model, and therefore may not represent the actual relationship between bird density and that variable.\n\n\n\n:::"
+  },
+  {
+    "objectID": "BBWA.html#map",
+    "href": "BBWA.html#map",
+    "title": "BBWA (Bay-breasted Warbler): Region BCR-71",
+    "section": "MAP",
+    "text": "MAP\nUse this icon  in the map below to select and visualize raster and vector layers.\n\n  training_data_map"
+  },
+  {
+    "objectID": "index.html#fireside-chat",
+    "href": "index.html#fireside-chat",
+    "title": "MODEL EVALUATION SYSTEM",
+    "section": "",
+    "text": "Dear Evaluator, we would your feedback on Species Distribution Models (SDMs) inputs and outputs for several species (see list below) in two ecoregions in Canada (see map below).\nThis exercise and your valuable feedback will help in two ways: 1) modelers will use your feedback to improve model predictions, and 2) help us to develop an interactive tool for model evaluation (see tool context below).\nOur aim is to develop and interactive and quantitative tool for improving SDMs and evaluating information needs for multiple applications. This tool will foster collaboration among multiple partners and users form model improvement and decision making."
+  },
+  {
+    "objectID": "BBWA.html#species-input-data",
+    "href": "BBWA.html#species-input-data",
+    "title": "BBWA (Bay-breasted Warbler): Region BCR-71",
+    "section": "1. SPECIES INPUT DATA",
+    "text": "1. SPECIES INPUT DATA\n\n\n\n\n\n\na. Histogram of counts\n\n\n\n\n\n\n\nTask:\nPlease identify any potential outliers and/or a truncation value that modelers should be aware of.\n\n\nDescription:\nThis is a histogram of raw counts included in the model.\n\n\n\n\n\n\n\n\n\n\n::: {.callout-note collapse=“true”}"
+  },
+  {
+    "objectID": "BBWA.html#b.-temporal-distribution-of-detections",
+    "href": "BBWA.html#b.-temporal-distribution-of-detections",
+    "title": "BBWA (Bay-breasted Warbler): Region BCR-71",
+    "section": "b. Temporal distribution of detections",
+    "text": "b. Temporal distribution of detections\n::: {style=“display: flex;”}\n\nTask:\nPlease identify any potential outliers and/or a truncation value that modelers should be aware of.\n\n\n\nDescription:\nThis is the temporal distribution of detections and nondetections by time since sunrise and ordinal day of year.\n\n\n\n\n\n&lt;/div&gt;\n::: :::\n\n\n\n\n\n\nc. Map of observations\n\n\n\n\n\n\n\nTask:\nSelect “Observations” on the map below. Please identify any observations that might be misidentifications, migratory individuals, or surprises.\n\n\nDescription:\nPlease use the map below to visualize observations of the focal species."
+  },
+  {
+    "objectID": "BBWA.html#a.-sampling-data",
+    "href": "BBWA.html#a.-sampling-data",
+    "title": "BBWA (Bay-breasted Warbler): Region BCR-71",
+    "section": "a. Sampling data",
+    "text": "a. Sampling data\nTask:\nPlease identify any sampling data preparation steps that might violate assumptions and suggest alternatives.\nDescription:\nThe following treatments were applied to the survey data\n\nSurvey data were spatially thinned using a hexagonal grid with cells of 2.5 km spacing to ensure independence of samples. One survey per grid per year was used for each separate model run.\nSurvey data were assigned to bird conservation region (BCR) for each modelling unit using all surveys within the BCR and a 100 km buffer around the BCR."
+  },
+  {
+    "objectID": "BBWA.html#b.-covariate-data",
+    "href": "BBWA.html#b.-covariate-data",
+    "title": "BBWA (Bay-breasted Warbler): Region BCR-71",
+    "section": "b. Covariate data",
+    "text": "b. Covariate data\nTask:\nPlease identify any covariate data preparation steps that might violate assumptions and suggest alternatives.\nDescription:\nThe following preparations were made to the covariate data:\n\nLocal covariates were extracted with a 200m buffer radius. Landscape covariates were extracted with a 2 km buffer radius.\nCovariates were thinned for each BCR using stepwise variance inflation factor (VIF) with a threshold of 10 to reduce covariance, which typically results in no two-way correlation greater than 0.7.\nAdditional preparations are listed in the table in task 2a."
+  },
+  {
+    "objectID": "BBWA.html#a.-model-process",
+    "href": "BBWA.html#a.-model-process",
+    "title": "BBWA (Bay-breasted Warbler): Region BCR-71",
+    "section": "a. Model process",
+    "text": "a. Model process\nTask:\nPlease identify any modelling choices that might violate assumptions and suggest alternatives.\nDescription:\nSeparate models were fit for each combination of species and BCR. All models were fit with boosted regression trees that could accommodate up to 3-way interactions between variables. The modelling process consisted with the following steps:\n\nTuning: models were fit with decreasing learning rates until a reasonable number of trees was found (between 1,000 and 10,000). Covariates with less than 0.1% variable importance were removed.\nBootstrapping: ten models with different selections of spatial thinning were fit using the learning rate and number of trees defined in step 1.\nPredicting: predictions were made using covariate values for every 5 years from 1985 to 2020 from the bootstrapped models to 1km resolution.\nValidating: values were extracted for withheld data from the prediction surfaces of the closest year and model performance was evaluated for various parameters\nRange limiting: predictions outside of probable range based on eBird detections were masked out."
   }
 ]
