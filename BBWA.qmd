@@ -16,7 +16,7 @@ Use THIS FORM [BBWA-BCR-71](https://docs.google.com/forms/d/1xhekH7fj2461LX_AAbN
 
 ```{r echo=F, message=F, warning=FALSE}
 # Setting working directory
-setwd("C:/FiresideChat")
+#setwd("C:/FiresideChat")
 # Libraries
 library(dplyr)
 library(reshape2)
@@ -63,14 +63,14 @@ names(bird_d)[1] <- "id"
 # Merging bcrlist_sel and bird_d by id, indicate if species was detected or not
 birds_merged_can71 <- merge(bcrlist_can71, bird_d, by="id")%>%
    subset(select = c("id",  "BBWA")) |> 
-    mutate(BBWA=as.numeric(BBWA),
-           detection = ifelse(BBWA > 0, 1, 0)) |> 
+    mutate(BBWA=ifelse(BBWA=="0", NA, as.integer(BBWA)),
+           detection = ifelse(is.na(BBWA), 0, 1)) |> 
   rename(count = BBWA)
   
 birds_merged_can81 <- merge(bcrlist_can81, bird_d, by="id")%>%
    subset(select = c("id", "BBWA")) |> 
-    mutate(BBWA=as.numeric(BBWA),
-           detection = ifelse(BBWA > 0, 1, 0)) |> 
+    mutate(BBWA=ifelse(BBWA=="0", NA, as.integer(BBWA)),
+           detection = ifelse(is.na(BBWA), 0, 1)) |> 
   rename(count = BBWA)
 
 # TASK 2. TEMPORAL DISTRIBUTION OF DETECTIONS
@@ -402,8 +402,8 @@ This map below shows the (EXTRAPOLTAION layer)..................
                      group="Species_data")%>%
      
   # Adding legend species data
-    addLegend('bottomright', pal = pal, values = locations_can71$year,
-            title = "Year", opacity = 1, group="Species_data")%>%
+    addLegend('bottomright', pal = pal, values = locations_can71$count,
+            title = "Count", opacity = 1, group="Species_data")%>%
      
   # Adding raster PREDICTIONS
     addRasterImage(terra::project(BBWA_can71_2020$mean, "epsg:4326"),
