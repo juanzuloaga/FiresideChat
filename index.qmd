@@ -1,12 +1,5 @@
 ---
-format:
-  html:
-    self-contained: true
-    link-external-icon: true
-    link-external-newwindow: true
-toc: true
-editor: visual
-css: styles.css
+title: "MODEL EVALUATION"
 ---
 
 ## Fireside Chat
@@ -23,16 +16,15 @@ Select the SPECIES and REGION (see list below) you want to provide feedback for!
 
 Notice there are two separate files for each species, corresponding to two regions for evaluation.
 
-| Species code | Species name              | Region                      |
-|--------------|---------------------------|-----------------------------|
-| BBWA         | *Bay-breasted Warbler*    | [BCR-71](BBWA.html), BCR-81 |
-| BBWO         | *Black-backed Woodpecker* |                             |
-| CMWA         | *Cape May Warbler*        | BCR-71, BCR-81              |
-| CONW         | *Connecticut Warbler*     | BCR-71, BCR-81              |
-| LEYE         | *Lesser Yellowlegs*       | BCR-71                      |
-| OSFL         | *Olive-sided Flycatcher*  | BCR-71, BCR-81              |
-| TEWA         | *Tennessee Warbler*       | BCR-71, BCR-81              |
-| BLPW         | *Blackpoll Warbler*       |                             |
+| Species code | Species name              | Region                                                                                                                         |
+|--------------|---------------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| BBWA         | *Bay-breasted Warbler*    | [BCR-71](BBWA_can71.html){target="_blank"}, [BCR-81](BBWA_can81.html){target="_blank"}                                         |
+| BBWO         | *Black-backed Woodpecker* | [BBWO-71](BBWO_can71.html){target="_blank"}, [BBWO-81](BBWO_can81.html){target="_blank"}                                       |
+| CMWA         | *Cape May Warbler*        | [CMWA-71](CMWA_can71.html){target="_blank"}, [CMWA-81](CMWA_can81.html){target="_blank"}                                       |
+| CONW         | *Connecticut Warbler*     | [CONW-71](CONW_can71.html){target="_blank"}, [CONW-81](CONW_can81.html){target="_blank"}                                       |
+| LEYE         | *Lesser Yellowlegs*       | [LEYE-71](LEYE_can71.html){target="_blank"}                                                                                    |
+| OSFL         | *Olive-sided Flycatcher*  | [OSFL-71](OSFL_can71.html){target="_blank"}, [OSFL](OSFL_can81.html)[-](OSFL_can81.html){target="_blank"}[81](OSFL_can81.html) |
+| TEWA         | *Tennessee Warbler*       | [TEWA-71](TEWA_can71.html){target="_blank"}, [TEWA-81](TEWA_can81.html){target="_blank"}                                       |
 
 ## Study regions
 
