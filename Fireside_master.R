@@ -80,7 +80,7 @@ for(i in 1:length(regions)){
   
 bcrlist_region <- dplyr::select(bcrlist, id, regions[i])
 
-bcrlist_region <- bcrlist_region%>%
+bcrlist_region <- bcrlist_region %>%
   dplyr::filter(bcrlist_region[2] == "TRUE")
 
 for(j in 1:7){
@@ -94,10 +94,10 @@ for(j in 1:7){
   varsp <- species_list$Species_code[j]
 
   birds_merged_region <- merge(bcrlist_region, bird_d, by="id")%>%
-    subset(select = c("id", species_list$Species_code[j]))%>%
-  dplyr::mutate(varsp=ifelse(.data[[varsp]] == 0, NA, as.integer(.data[[varsp]])),
-                detection = ifelse(is.na(.data[[varsp]]), 0, 1)) |>
-    rename(count = varsp)
+    data.table::setnames(old=varsp, new="count") |> 
+    subset(select = c("id", "count"))%>%
+  dplyr::mutate(count=ifelse(count == 0, NA, as.integer(count)),
+                detection = ifelse(is.na(count), 0, 1))
   
 # adding the DATE, TIME, and COORDS
 visit_detections_region <- merge(bcrlist_region, visit, by="id")%>%
