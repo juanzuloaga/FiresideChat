@@ -12,34 +12,46 @@ website:
           menu:
             - text: "Home"
               href: index.html
+              target: _blank
             - text: "BBWA_bcr71"
               href: BBWA_can71.html
+              target: _blank
             - text: "BBWO_bcr71"
               href: BBWO_can71.html
+              target: _blank
             - text: "CMWA_bcr71"
               href: CMWA_can71.html
+              target: _blank
             - text: "CONW_bcr71"
               href: CONW_can71.html
+              target: _blank
             - text: "LEYE_bcr71"
               href: LEYE_can71.html
+              target: _blank
             - text: "OSFL_bcr71"
               href: OSFL_can71.html
+              target: _blank
             - text: "TEWA_bcr71"
               href: TEWA_can71.html
+              target: _blank
             - text: "BBWA_bcr81"
               href: BBWA_can81.html
+              target: _blank
             - text: "BBWO_bcr81"
               href: BBWO_can81.html
+              target: _blank
             - text: "CMWA_bcr81"
               href: CMWA_can81.html
             - text: "CONW_bcr81"
               href: CONW_can81.html
             - text: "LEYE_bcr81"
               href: LEYE_can81.html
+              target: _blank
             - text: "OSFL_bcr81"
               href: OSFL_can81.html
             - text: "TEWA_bcr81"
               href: TEWA_can81.html
+              target: _blank
 
 format:
   html:

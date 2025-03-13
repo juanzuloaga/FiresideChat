@@ -51,7 +51,7 @@ species_list <- read.csv("./Data/Focal Species _Fireside_Chat.csv")%>%
   dplyr::filter(To_run == "Y")
 
 # 2.2. List of regions (BCRs) ----------------
-regions <- c("can71")
+regions <- c("can81")
 
 # 2.3 Covariates table names ----------------
 cov_label <- read.xlsx("./data/covariates_label_insert.xlsx")
@@ -101,11 +101,7 @@ for(j in 1:7){
     dplyr::mutate(count=ifelse(count == 0, NA, as.integer(count)),
                   detection = ifelse(is.na(count), 0, 1))
 
-  dplyr::mutate(count=ifelse(count == 0, NA, as.integer(count)),
-                detection = ifelse(is.na(count), 0, 1))
-
-  
-# adding the DATE, TIME, and COORDS
+ # adding the DATE, TIME, and COORDS
 visit_detections_region <- merge(bcrlist_region, visit, by="id")%>%
   inner_join(birds_merged_region) |> 
   subset(select = c("id", "tssr", "jday", "count", "detection", "lat", "lon")) |> 
@@ -115,14 +111,12 @@ visit_detections_region <- merge(bcrlist_region, visit, by="id")%>%
          detection = factor(detection, levels=c(0, 1), labels = c("Undetected", "Detected")))
 
 # OBSERVATION IN REGIONS
-locations_region <- st_as_sf(visit_detections_region, coords=c("lon", "lat"), crs=4326) |> 
-  terra::vect() |> 
-  terra::project(crs(bcr_boundary))
 
-locations_region_detected <- locations_region[locations_region$count > 0, ]
-locations_region_detected_wgs84 <- terra::project(locations_region_detected, crs_wgs84)
-locations_region_Undetected <- locations_region[locations_region$count == 0, ]
-locations_region_Undetected_wgs84 <- terra::project(locations_region_Undetected, crs_wgs84)
+locations_region <- st_as_sf(visit_detections_region, coords=c("lon", "lat"), crs=4326) |> 
+  terra::vect() 
+
+locations_region_detected_wgs84 <- locations_region[!is.na(locations_region$count), ]
+locations_region_Undetected_wgs84 <- locations_region[is.na(locations_region$count), ]
 
 # COVARIATES
 
@@ -194,7 +188,7 @@ raster_model_wgs84 <- terra::rast(paste0("./data/", species_list$Species_code[j]
                      terra::project(crs_wgs84)
 }
 # Palletes
-pal <- colorFactor("viridis",locations_region_detected$count,
+pal <- colorFactor("viridis",locations_region_detected_wgs84$count,
                    na.color = "transparent")
 pal2 <- colorNumeric("inferno", values(raster_model_wgs84$mean), 
                      na.color = "transparent", reverse = T)
@@ -323,8 +317,8 @@ rmarkdown::render(input = "./Fireside_template.Rmd",
 
 }
 
-
  
+
   
   
 }

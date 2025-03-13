@@ -60,7 +60,7 @@ setwd("C:/FiresideChat/")
 
 **Welcome to bird model evaluation!**
 
-Below are the model product inputs and outputs for evaluation, divided across six categories. Within, each category there will be several tasks. Note that some categories are in-progress. Please use this Google form <a href=https://docs.google.com/forms/d/1xhekH7fj2461LX_AAbN8Md1mLibKmaGo4mF_FexQm3M/edit target="_blank">[MODEL EVALUATION FROM]{style="color:green"}</a> to provide your feedback on each section of the model cycle.
+Below are the model product inputs and outputs for evaluation, divided across six categories. Within, each category there will be several tasks. Note that some categories are in-progress. Please use this Google form <a href=https://docs.google.com/forms/d/e/1FAIpQLSfcSzayYXswH09Ogp9neDn8SP9AJ9KhUoO2Y0yywCndNwQXtw/viewform?usp=header target="_blank">[MODEL EVALUATION FROM]{style="color:green"}</a> to provide your feedback on each section of the model cycle.
 
 **Model rationale**
 
@@ -249,7 +249,7 @@ Please identify any covariate data preparation steps that might violate assumpti
 
 The following preparations were made to the covariate data:
 
--   Local covariates were extracted with a 200m buffer radius. Landscape covariates were extracted with a 2 km buffer radius.
+-   Local covariates (appended with "_1km") were extracted with a 200m buffer radius. Landscape covariates (appended with "_5x5") were extracted with a 2 km buffer radius.
 
 -   Covariates were thinned for each BCR using stepwise variance inflation factor (VIF) with a threshold of 10 to reduce covariance, which typically results in no two-way correlation greater than 0.7.
 
