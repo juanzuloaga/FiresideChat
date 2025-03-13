@@ -5,17 +5,24 @@ format:
     self-contained: true
     link-external-icon: true
     link-external-newwindow: true
-    theme: Sandstone
+    embed-resources: true
+    toc: false
+    css: styles.css
+    theme: sandstone
     page-layout: article
     hide:
       - toc
       - navigation
 editor: visual
-css: styles.css
 subtitle: "`r species_region`"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
-
 ---
+
+<p align="right">
+
+[Back to the main page](index.html)
+
+</p>
 
 ```{r echo=F, message=F, warning=FALSE}
 # Setting working directory
@@ -43,13 +50,13 @@ library(leafem)
 library(tidyverse)
 library(htmltools)
 library(quarto)
+library(leaflet.extras)
 
 
 # Setting working directory
 setwd("C:/FiresideChat/")
 
 ```
-
 
 **Welcome to bird model evaluation!**
 
@@ -59,11 +66,12 @@ Below are the model product inputs and outputs for evaluation, divided across si
 
 The BAM V5 models were produced for the purpose of modelling the distribution and abundance of breeding birds in the boreal forest. The primary purposes of the models are to accurately map the distribution of bird density on the landscape and sum those predictions to estimate population size.
 
-::: panel-tabset
-## 1.SPECIES INPUT DATA
+# I. Model Evaluation Information {.tabset}
+
+## 1.SPECIES DATA
 
 ::: {.callout-note collapse="true"}
-## a. Histogram of counts
+### a. Histogram of counts
 
 ::: {style="display: flex;"}
 <div>
@@ -97,7 +105,7 @@ ggplot(data=dplyr::filter(birds_merged_region, count > 0), aes(x=count))+
 :::
 
 ::: {.callout-note collapse="true"}
-## b. Temporal distribution of detections
+### b. Temporal distribution of detections
 
 ::: {style="display: flex;"}
 <div>
@@ -134,7 +142,7 @@ This is the temporal distribution of detections and nondetections by time since 
 :::
 
 ::: {.callout-note collapse="true"}
-## c. Map of observations
+### c. Map of observations
 
 ::: {style="display: flex;"}
 <div>
@@ -160,7 +168,7 @@ Please use the map below to visualize observations of the focal species.
 ## 2.COVARIATES
 
 ::: {.callout-note collapse="true"}
-## a. Covariates list and description
+### a. Covariates list and description
 
 **Task:**
 
@@ -180,18 +188,15 @@ cov_table <- htmltools::tagList(DT::datatable(cov_region_merge,
                                 )
 ```
 
-Note: Use the slider in the 'Relative importance' column to select covariates with high values. 
+Note: Use the slider in the 'Relative importance' column to select covariates with high values.
 
 ```{r }
 cov_table
 ```
-
-
-
 :::
 
 ::: {.callout-note collapse="true"}
-## b. Covariate relative importance
+### b. Covariate relative importance
 
 **Task:**
 
@@ -218,7 +223,7 @@ Mean relative importance across 10 bootstraps; error bars represent standard err
 ## 3.DATA PREPARATION
 
 ::: {.callout-note collapse="true"}
-## a. Sampling data
+### a. Sampling data
 
 **Task:**
 
@@ -234,7 +239,7 @@ The following treatments were applied to the survey data
 :::
 
 ::: {.callout-note collapse="true"}
-## b. Covariate data
+### b. Covariate data
 
 **Task:**
 
@@ -254,7 +259,7 @@ The following preparations were made to the covariate data:
 ## 4.MODEL FITTING
 
 ::: {.callout-note collapse="true"}
-## a. Model process
+### a. Model process
 
 **Task:**
 
@@ -278,7 +283,7 @@ Separate models were fit for each combination of species and BCR. All models wer
 ## 5.PREDICTIONS
 
 ::: {.callout-note collapse="true"}
-## a. Mean density map
+### a. Mean density map
 
 **Task:**
 
@@ -292,7 +297,7 @@ Select "Prediction" on the map below. It shows the mean estimates of the number 
 ## 6.UNCERTAINTY
 
 ::: {.callout-note collapse="true"}
-## a. Coefficient of variation
+### a. Coefficient of variation
 
 **Task:**
 
@@ -304,7 +309,7 @@ Select "Uncertainty" on the map below. It shows the coefficient of variation of 
 :::
 
 ::: {.callout-note collapse="true"}
-## b. Extrapolation map
+### b. Extrapolation map
 
 **Task:**
 
@@ -314,9 +319,8 @@ Please identify any areas that where you are surprised the predictions are or ar
 
 Select "Extrapolation" on the map below. It shows the proportion of bootstraps where the values for at least 1 variable in the model were outside the values in the model, and therefore may not represent the actual relationship between bird density and that variable.
 :::
-:::
 
-## MAP
+# II. Maps
 
 Use this icon ![](Figures/icon_layers.png){width="50"} in the map below to select and visualize raster and vector layers.
 
@@ -325,27 +329,6 @@ Use this icon ![](Figures/icon_layers.png){width="50"} in the map below to selec
   training_data_map
 ```
 
-
-
-
-
 ```{r}
 
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -30,7 +30,8 @@ Packages <- c(library(dplyr),
               library(tidyverse),
               library(htmltools),
               library(magrittr),
-              library(quarto)
+              library(quarto),
+              library(leaflet.extras)
 )
 
 lapply(Packages, library, character.only =TRUE) 
@@ -50,7 +51,7 @@ species_list <- read.csv("./Data/Focal Species _Fireside_Chat.csv")%>%
   dplyr::filter(To_run == "Y")
 
 # 2.2. List of regions (BCRs) ----------------
-regions <- c("can71", "can81")
+regions <- c("can71")
 
 # 2.3 Covariates table names ----------------
 cov_label <- read.xlsx("./data/covariates_label_insert.xlsx")
@@ -94,10 +95,10 @@ for(j in 1:7){
   varsp <- species_list$Species_code[j]
 
   birds_merged_region <- merge(bcrlist_region, bird_d, by="id")%>%
-    subset(select = c("id", species_list$Species_code[j]))%>%
-  dplyr::mutate(varsp=ifelse(.data[[varsp]] == 0, NA, as.integer(.data[[varsp]])),
-                detection = ifelse(is.na(.data[[varsp]]), 0, 1)) |>
-    rename(count = varsp)
+    data.table::setnames(old=varsp, new="count") |> 
+    subset(select = c("id", "count"))%>%
+    dplyr::mutate(count=ifelse(count == 0, NA, as.integer(count)),
+                  detection = ifelse(is.na(count), 0, 1))
   
 # adding the DATE, TIME, and COORDS
 visit_detections_region <- merge(bcrlist_region, visit, by="id")%>%
@@ -108,7 +109,7 @@ visit_detections_region <- merge(bcrlist_region, visit, by="id")%>%
                          labels = c("Time since sunrise", "Ordinal day")),
          detection = factor(detection, levels=c(0, 1), labels = c("Undetected", "Detected")))
 
-# OBASERVATION IN REGIONS
+# OBSERVATION IN REGIONS
 locations_region <- st_as_sf(visit_detections_region, coords=c("lon", "lat"), crs=4326) |> 
   terra::vect() |> 
   terra::project(crs(bcr_boundary))
@@ -296,7 +297,9 @@ training_data_map <- leaflet() %>%
                                       "Extrapolation"))%>%
   hideGroup(c("Predictions",
               "Uncertainty", "Extrapolation",
-              "Observations_Undetected"))
+              "Observations_Undetected"))%>%
+
+  addResetMapButton()
 
 
                                 
@@ -308,7 +311,7 @@ print("Rendering .html.........")
 rmarkdown::render(input = "./Fireside_template.Rmd",
                   output_format = "html_document",
                   output_file =  output_doc,
-                #  output_yaml = "./_quarto.yml",
+                  output_yaml = "./_quarto.yml",
                   output_dir = "./docs/")     
 
 

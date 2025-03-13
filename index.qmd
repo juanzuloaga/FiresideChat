@@ -1,5 +1,14 @@
 ---
 title: "MODEL EVALUATION"
+
+
+website:
+  title: "MODEL EVALUATION SYSTEM"
+  navbar:
+      background: primary
+      search: true
+      right:
+        - text: "Species for Evaluation"
 ---
 
 ## Fireside Chat
@@ -17,7 +26,7 @@ Select the SPECIES and REGION (see list below) you want to provide feedback for!
 Notice there are two separate files for each species, corresponding to two regions for evaluation.
 
 | Species code | Species name              | Region                                                                                                                         |
-|--------------|---------------------------|--------------------------------------------------------------------------------------------------------------------------------|
+|-------------|-------------|-----------------------------------------------|
 | BBWA         | *Bay-breasted Warbler*    | [BCR-71](BBWA_can71.html){target="_blank"}, [BCR-81](BBWA_can81.html){target="_blank"}                                         |
 | BBWO         | *Black-backed Woodpecker* | [BBWO-71](BBWO_can71.html){target="_blank"}, [BBWO-81](BBWO_can81.html){target="_blank"}                                       |
 | CMWA         | *Cape May Warbler*        | [CMWA-71](CMWA_can71.html){target="_blank"}, [CMWA-81](CMWA_can81.html){target="_blank"}                                       |
