@@ -2,28 +2,28 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "MODEL EVALUATION",
+    "title": "MODEL EVALUATION SYSTEM",
     "section": "",
     "text": "Dear Evaluator, we would your feedback on Species Distribution Models (SDMs) inputs and outputs for several species (see list below) in two ecoregions in Canada (see map below).\nThis exercise and your valuable feedback will help in two ways: 1) modelers will use your feedback to improve model predictions, and 2) help us to develop an interactive tool for model evaluation (see tool context below).\nOur aim is to develop and interactive and quantitative tool for improving SDMs and evaluating information needs for multiple applications. This tool will foster collaboration among multiple partners and users form model improvement and decision making."
   },
   {
     "objectID": "index.html#fireside-chat",
     "href": "index.html#fireside-chat",
-    "title": "MODEL EVALUATION",
+    "title": "MODEL EVALUATION SYSTEM",
     "section": "",
     "text": "Dear Evaluator, we would your feedback on Species Distribution Models (SDMs) inputs and outputs for several species (see list below) in two ecoregions in Canada (see map below).\nThis exercise and your valuable feedback will help in two ways: 1) modelers will use your feedback to improve model predictions, and 2) help us to develop an interactive tool for model evaluation (see tool context below).\nOur aim is to develop and interactive and quantitative tool for improving SDMs and evaluating information needs for multiple applications. This tool will foster collaboration among multiple partners and users form model improvement and decision making."
   },
   {
     "objectID": "index.html#species-for-evaluation",
     "href": "index.html#species-for-evaluation",
-    "title": "MODEL EVALUATION",
+    "title": "MODEL EVALUATION SYSTEM",
     "section": "Species for Evaluation",
     "text": "Species for Evaluation\nSelect the SPECIES and REGION (see list below) you want to provide feedback for!\nNotice there are two separate files for each species, corresponding to two regions for evaluation.\n\n\n\nSpecies code\nSpecies name\nRegion\n\n\n\n\nBBWA\nBay-breasted Warbler\nBCR-71, BCR-81\n\n\nBBWO\nBlack-backed Woodpecker\nBBWO-71, BBWO-81\n\n\nCMWA\nCape May Warbler\nCMWA-71, CMWA-81\n\n\nCONW\nConnecticut Warbler\nCONW-71, CONW-81\n\n\nLEYE\nLesser Yellowlegs\nLEYE-71\n\n\nOSFL\nOlive-sided Flycatcher\nOSFL-71, OSFL-81\n\n\nTEWA\nTennessee Warbler\nTEWA-71, TEWA-81"
   },
   {
     "objectID": "index.html#study-regions",
     "href": "index.html#study-regions",
-    "title": "MODEL EVALUATION",
+    "title": "MODEL EVALUATION SYSTEM",
     "section": "Study regions",
     "text": "Study regions\nBCRs 71 and 81"
   }
